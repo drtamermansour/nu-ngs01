@@ -1,4 +1,13 @@
-# NGS Data analysis course | Bioinformatics Diploma Intake 1 | Nile University
+<p align="center">
+  <a href="http://bioinfo.edu.eg/">
+    <img src="http://nu.edu.eg/wp-content/uploads/2017/02/nu_logo.png" alt="Nile University" width="125" height="89">
+  </a>
+  <h2 align="center">NGS Data analysis course-1</h2>
+  <p align="center">Bioinformatics Diploma @ NU</p>
+
+</p>
+
+<hr>
 
 ## Lectures
 
