@@ -41,7 +41,7 @@
 
 <h2 align="center"> Overview of Unix shells </h2>
 <ul>
-<li><b>Shell script: The origin of scripting languages </b></li>
+<li><b>Shell script: The origin of <a href="https://en.wikipedia.org/wiki/Scripting_language">scripting languages</a></b></li>
 <li><b>A shell is a program that takes commands and gives them to the operating system kernel to be executed.</b></li>
 <li><b>A terminal is a program that allows us as end users to interact with the shell. </b></li>
 <li><b><a href="http://swcarpentry.github.io/shell-novice/setup.html">Setup</a></b></li>
@@ -55,9 +55,33 @@
 </li>
 <li><b>You can make your own shell ;)</b></li>
 <li><b>Which shell do you have on your machine?</b></li>
+</ul>
+
+```bash
+
+ls /bin/*sh
+
+```
+
+<ul>
 <li><b>What is your default shell?</b></li>
+</ul>
+
+```bash
+
+echo $SHELL
+
+```
+
+<ul>
 <li><b>What is the version of your bash?</b></li>
 </ul>
+
+```bash
+
+bash --version 
+
+```
 
 <hr>
 
