@@ -106,30 +106,20 @@ bash --version
 </ul>
 
 <hr>
-<hr>
 
-<h2 align="center"> Basics of Bash scripting </h2>
+<h2 align="center"> What should you expect today? </h2>
 
-<h2 align="left"> Navigating Files and Directories </h2>
+Today we will have a quick introduction for the basic features of bash scripting. We should learn about:
 
-```bash
-
-pwd
-cd /
-cd ~
-cd ..
-cd ../..
-cd .
-cd /users/nelle/Desktop/data-shell
-ls
-
-```
+<ul>
+<li><b>Working With Files and Directories from the command line. </b></li>
+<li><b>Pipes and Filters. </b></li>
+<li><b>Semantics of loops and the conditional statemnets. </b></li>
+<li><b>integer arithmetic expressions. </b></li>
+<li><b>Writing Shell Scripts. </b></li>
+</ul>
 
 <hr>
-
-<h2 align="left"> My directory structure</h2>
-<p align="center"><a href="#"><img src="./assets/2.png"></a></p>
-<p align="center"><a href="#"><img src="./assets/3.png"></a></p>
 
 
 
