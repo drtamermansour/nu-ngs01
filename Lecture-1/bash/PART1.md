@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Bash Programming</h1>
   
-  <hr>  
+  <hr>
   
   <h2 align="center"> Unix Components </h2>
       <p align="center"><a href="#"><img src="./assets/1.png"></a></p>
@@ -61,27 +61,30 @@
 
 <hr>
 
-<h2 align="center"> Overview of Unix shells </h2>
+<h2 align="center"> Why command line? </h2>
 
 <ul>
 <li><b>Use not limited to GUI design</b></li>
 <li><b>GUI applications tend to be less stable</b></li>
 <li><b>Glue more advanced scripts</b></li>
 <li><b>Repeatability & Automation</b></li>
-<ul>
+</ul>
 
-<h2 align="center"> Overview of Unix shells </h2>
+<hr>
+
+<h2 align="center"> Why learn Bash? </h2>
 
 <ul>
 <li><b>Learning Bash means learning the roots of scripting</b></li>
-<li><b>Bash & sh are the most commonly used scripts on Unix</b><ul><li>Note: sh is usually just a link to Bash on Unix like sys.</li></ul></li>
+<li><b>Bash & sh are the most commonly used scripts on Unix</b>
+  <ul><li>Note: sh is usually just a link to Bash on Unix like sys.</li></ul></li>
 <li><b>Bash is open source</b></li>
 </ul>
 
 <hr>
 <hr>
 
-<h2 align="center"> Basics of Bash scripting echo “Hi world” </h2>
+<h2 align="center"> Basics of Bash scripting </h2>
 
 <h2 align="left"> Navigating Files and Directories </h2>
 
