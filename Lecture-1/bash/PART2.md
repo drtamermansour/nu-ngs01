@@ -1,3 +1,27 @@
+<h2 align="center"> Basics of Bash scripting </h2>
+
+<h2 align="left"> Navigating Files and Directories </h2>
+
+```bash
+
+pwd
+cd /
+cd ~
+cd ..
+cd ../..
+cd .
+cd /users/nelle/Desktop/data-shell
+ls
+
+```
+
+<hr>
+
+<h2 align="left"> My directory structure</h2>
+<p align="center"><a href="#"><img src="./assets/2.png"></a></p>
+<p align="center"><a href="#"><img src="./assets/3.png"></a></p>
+
+
 <h2 align="center">My directory structure</h2>
 
 <p align="center"><a href="#"><img src="./assets/4.png"></a></p>
