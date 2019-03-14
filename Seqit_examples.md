@@ -69,7 +69,30 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 ---
 
+## GREP
 
+### 1- Extract human hairpins (i.e. sequences with name starting with hsa)
+
+`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa`
+
+### 2- Remove human and mice hairpins.
+
+`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa -p ^mmu -v`
+
+### 3- Extract sequences containing AGGCG
+
+`zcat hairpin.fa.gz | seqkit grep -s -i -p aggcg`
+
+### 4- Extract sequences starting with AGGCG
+
+`zcat hairpin.fa.gz | seqkit grep -s -r -i -p ^aggcg`
+
+### 5- zcat hairpin.fa.gz | seqkit grep -s -d -i -p TTSAA
+
+`zcat hairpin.fa.gz | seqkit grep -s -d -i -p TTSAA`
+`zcat hairpin.fa.gz | seqkit grep -s -r -i -p TT[CG]AA`
+
+---
 
 
 
