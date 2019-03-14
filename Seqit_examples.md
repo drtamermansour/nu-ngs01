@@ -94,12 +94,26 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 ---
 
+## Sorting
+
+### 1- sort by ID
+
+`echo -e ">seq1\nACGTNcccc\n>SEQ2\nacgtnAAAA" | seqkit sort --quiet`
+
+### 2- sort by ID, ignoring case.
+
+`echo -e ">seq1\nACGTNcccc\n>SEQ2\nacgtnAAAA" | seqkit sort --quiet -i`
+
+### 3- sort by seq, ignoring case.
+
+`echo -e ">seq1\nACGTNcccc\n>SEQ2\nacgtnAAAA" | seqkit sort --quiet -s -i`
+
+### 4- sort by sequence length.
+
+`echo -e ">seq1\nACGTNcccc\n>SEQ2\nacgtnAAAAnnn\n>seq3\nacgt" | seqkit sort --quiet -l`
 
 
-
-
-
-
+---
 
 
 
