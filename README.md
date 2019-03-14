@@ -15,9 +15,9 @@
 <summary>Day 1</summary>
 <br>
 <ol>
-<li><b>Part 1</b> | <a href="./Link/to/lecture/slides">Next generation sequencing Techniques</a></li>
-<li><b>Part 2</b> | <a href="./Link/to/lecture/slides">Data file formats for NGS "intro"</a></li>
-<li><b>Part 3</b> | <a href="./Day-1/bash">BASH</a></li>
+<li><b>Part 1</b> | Next generation sequencing Techniques <a href="https://canvas.instructure.com">[Canvas]</a></li>
+<li><b>Part 2</b> | Data file formats for NGS "intro" <a href="https://canvas.instructure.com">[Canvas]</a></li>
+<li><b>Part 3</b> | BASH <a href="./Day-1/bash/">[Lectures]</a></li>
 </ol>
 
 </details>
