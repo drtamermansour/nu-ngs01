@@ -1,15 +1,4 @@
-# FASTA/Q manipulations (Tutorial from Starbook)
-
-## Install [bioconda](https://docs.conda.io/en/latest/miniconda.html) if you didn't have it already
-```
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-## restart the terminal
-conda config --add channels r
-conda config --add channels conda-forge
-conda config --add channels bioconda
-conda create -y --name ngs1 python=3.6
-```
+# FASTA/Q manipulations
 
 ## Download example data
 ```
