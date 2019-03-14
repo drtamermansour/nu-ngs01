@@ -15,6 +15,7 @@ conda create -y --name ngs1 python=3.6
 ## Install the tools
 
 ```
+source activate ngs1
 conda install -c bioconda ucsc-gtftogenepred
 mkdir ~/workdir/scripts && cd ~/workdir/scripts
 wget https://raw.githubusercontent.com/drtamermansour/horse_trans/master/scripts/genePredToBed
