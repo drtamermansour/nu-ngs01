@@ -1,6 +1,6 @@
 # FASTA/Q manipulations (Tutorial from Starbook)
 
-## Install [bioconda](https://docs.conda.io/en/latest/miniconda.html) if you don't have it already
+## Install [bioconda](https://docs.conda.io/en/latest/miniconda.html) if you didn't have it already
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
