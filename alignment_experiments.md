@@ -11,6 +11,9 @@ cd ~/kallisto/
 
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.pc_transcripts.fa.gz
 
+mv *fa old.fa
+cat old.fa | awk -F'|' '{print $1}' > gencode.vM20.pc_transcripts.fa
+
 gunzip gencode.vM20.pc_transcripts.fa.gz
 mv *fa reference/
 
@@ -59,9 +62,3 @@ wget https://transfer.sh/z8zqO/chr22_with_ERCC92.fa.gz
 gunzip *gz
 cd ..
 ```
-
-
-
-
-
-
