@@ -119,5 +119,8 @@ OR
 
 `seqkit shuffle hairpin.fa.gz`
 
----
+### Shuffle with a two-pass mode (For very large files)
 
+`seqkit shuffle -2 hairpin.fa.gz`
+
+---
