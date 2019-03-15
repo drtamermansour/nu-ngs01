@@ -39,7 +39,10 @@ cp sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 
 ###  Run Indexing
 
-`kallisto index -i human_pc.idx -k 25 gencode.vM20.pc_transcripts.fa`
+`kallisto index -i human_pc.idx -k 25 reference/gencode.vM20.pc_transcripts.fa`
+
+### Run Alignment
+`kallisto quant -i human_pc.idx -o XX samples/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz samples/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz --pseudobam`
 
 ---
 
