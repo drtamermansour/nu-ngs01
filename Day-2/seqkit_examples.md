@@ -1,4 +1,4 @@
-# Seqit
+# SeqKit
 
 
 ## 1- Read and print
