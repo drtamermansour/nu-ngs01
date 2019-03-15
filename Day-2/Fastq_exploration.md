@@ -2,7 +2,7 @@
 
 ## Download example data
 ```
-mkdir ~/workdir/sample_data && cd ~/workdir/sample_data
+mkdir -p ~/workdir/sample_data && cd ~/workdir/sample_data
 wget https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/sample_data/SP1.fq
 wget https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/sample_data/hairpin.fa.gz
 ```
@@ -28,5 +28,3 @@ seqkit fx2tab --name --only-id --gc sample_data/hairpin.fa.gz
 
 *  https://bioinf.shenwei.me/seqkit/usage/
 *  https://bioinf.shenwei.me/seqkit/tutorial/
-
-
