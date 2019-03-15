@@ -44,7 +44,7 @@ echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit seq -t dna
 `seqkit seq hairpin.fa.gz -s -w 0`
 
 
-## 5- Reverse comlement sequence
+## 5- Reverse complement sequence
 
 `seqkit seq hairpin.fa.gz -r -p`
 
