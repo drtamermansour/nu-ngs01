@@ -34,7 +34,7 @@ wget -c https://github.com/pachterlab/kallisto/releases/download/v0.45.1/kallist
 ##### Extract and move to usr/local/bin
 
 tar xvzf kallisto*gz
-cp sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
+sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 
 ```
 
