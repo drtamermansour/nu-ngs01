@@ -1,14 +1,17 @@
 ### Create virtual evironment with conda
 ```
 conda create -n ngs-gtf python=3.6 anaconda
+source activate ngs-gtf
+conda install -c conda-forge pypy3.5
+wget https://bootstrap.pypa.io/get-pip.py
+pypy3 get-pip.py
 ```
 ### Install prerequisites
 ```
-source activate ngs-gtf
-pip install gffutils
-pip install numpy
-pip install tqdm
-pip install 'intervaltree<3.0'
+pypy3 -m pip install gffutils
+pypy3 -m pip install numpy
+pypy3 -m pip install tqdm
+pypy3 -m pip install 'intervaltree<3.0'
 ```
 ### Download required files
 ```
