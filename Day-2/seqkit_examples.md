@@ -84,9 +84,10 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 `zcat hairpin.fa.gz | seqkit grep -s -r -i -p ^aggcg`
 
-### 5- zcat hairpin.fa.gz | seqkit grep -s -d -i -p TTSAA
+### 5- Extract sequences with TTSAA (AgsI digest site) in SEQUENCE. Base S stands for C or G.
 
 `zcat hairpin.fa.gz | seqkit grep -s -d -i -p TTSAA`
+OR
 `zcat hairpin.fa.gz | seqkit grep -s -r -i -p TT[CG]AA`
 
 ---
