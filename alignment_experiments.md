@@ -1,4 +1,6 @@
-## Download Data
+## Kallisto
+
+### Download Data
 
 ```bash
 
@@ -21,7 +23,6 @@ cd ..
 
 ```
 
-## Kallisto
 
 ### Install
 
