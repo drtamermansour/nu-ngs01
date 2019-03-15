@@ -74,7 +74,7 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 ### 2- Remove human and mice hairpins.
 
-`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa -p ^mmu -v`
+`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa -p ^mmu`
 
 ### 3- Extract sequences containing AGGCG
 
