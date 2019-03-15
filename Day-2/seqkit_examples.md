@@ -112,3 +112,12 @@ OR
 
 
 ---
+
+## shuffle
+
+### General Usage
+
+`seqkit shuffle hairpin.fa.gz`
+
+---
+
