@@ -10,10 +10,14 @@ cd ~/kallisto/
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.pc_transcripts.fa.gz
 
 gunzip gencode.vM20.pc_transcripts.fa.gz
+mv *fa reference/
 
 # RNA-Seq Samples
 wget http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar
-
+mv *tar samples/
+cd samples/
+tar xvf HBR_UHR_ERCC_ds_5pc.tar
+cd ..
 
 ```
 
