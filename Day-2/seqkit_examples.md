@@ -43,23 +43,20 @@ echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit seq -t dna
 
 `seqkit seq hairpin.fa.gz -s -w 0`
 
-## 5- Convert multi-line FASTQ to 4-line FASTQ
 
-`seqkit seq reads_1.fq.gz -w 0`
-
-## 6- Reverse comlement sequence
+## 5- Reverse comlement sequence
 
 `seqkit seq hairpin.fa.gz -r -p`
 
-## 7- Remove gaps and to lower/upper case
+## 6- Remove gaps and to lower/upper case
 
 `echo -e ">seq\nACGT-ACTGC-ACC" | seqkit seq -g -u`
 
-## 8- Convert RNA to DNA
+## 7- Convert RNA to DNA
 
 `echo -e ">seq\nUCAUAUGCUUGUCUCAAAGAUUA" | seqkit seq --rna2dna`
 
-## 9- Filter by sequence length
+## 8- Filter by sequence length
 
 ```bash
 zcat hairpin.fa.gz | seqkit seq | seqkit stats
@@ -114,15 +111,3 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 
 ---
-
-
-
-
-
-
-
-
-
-
-
-
