@@ -19,7 +19,7 @@ mkdir ~/gtf-compare && cd ~/gtf-compare
 mkdir databases && cd databases
 wget https://transfer.sh/HjxD/databases.tar.xz
 wget https://transfer.sh/QeKeX/gtfs.tar.xz
-tar xvf databases.tar.xz
+tar -xvf databases.tar.xz
 cd ..
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/comp.py
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/stat.py
