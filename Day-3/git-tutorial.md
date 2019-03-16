@@ -66,13 +66,15 @@ In the upper-right corner of any page, click your profile photo, then click Sett
 
 ![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/userbar-account-settings.png)
 
+![](https://help.github.com/assets/images/help/settings/userbar-account-settings.png)
+
 In the user settings sidebar, click SSH and GPG keys.
 
-![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/settings-sidebar-ssh-keys.png)
+![](https://help.github.com/assets/images/help/settings/settings-sidebar-ssh-keys.png)
 
 Click New SSH key or Add SSH key.
 
-![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/ssh-add-ssh-key.png)
+![](https://help.github.com/assets/images/help/settings/ssh-add-ssh-key.png)
 
 Paste your key into the "Key" field.
 
