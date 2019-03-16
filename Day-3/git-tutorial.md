@@ -4,8 +4,13 @@
 
 1. Register and signin on [Github](https://www.github.com)
 2. Create a new repository with the name **temp-repo**
-3- Clone the repo on your own device `git clone https://github.com/mr-eyes/temp-repo.git`
-4- move the the cloned repo dir `cd `
+
+### 3- Clone the repo on your own device
+
+```bash
+git clone https://github.com/mr-eyes/temp-repo.git
+cd temp-repo/
+```
 
 ### 4- Create README.md and update its content
 
