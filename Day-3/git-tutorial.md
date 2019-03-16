@@ -94,6 +94,7 @@ Paste your key into the "Key" field.
 ### Cheat Sheets
 
 [GIT Cheat Sheet](https://rogerdudler.github.io/git-guide/files/git_cheat_sheet.pdf)
+
 [MD Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
 
 ### Markdown Live Editors
