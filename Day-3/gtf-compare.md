@@ -15,10 +15,9 @@ pypy3 -m pip install 'intervaltree<3.0'
 ```
 ### Download required files
 ```
-mkdir ~/gtf-compare && cd ~/gtf-compare
-mkdir databases && cd databases
+mkdir -p ~/gtf-compare/databases && cd ~/gtf-compare/databases
 wget https://transfer.sh/HjxD/databases.tar.xz
-wget https://transfer.sh/QeKeX/gtfs.tar.xz
+# wget https://transfer.sh/QeKeX/gtfs.tar.xz
 tar -xvf databases.tar.xz
 cd ..
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/comp.py
