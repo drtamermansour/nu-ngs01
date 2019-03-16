@@ -28,7 +28,7 @@ wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/sta
 ```
 source activate ngs-gtf
 cd ~/gtf-compare
-python comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/ribo_tumor_scallop_merged.gtf.db
-python comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/poly_tumor_scallop_merged.gtf.db
-python stat.py
+pypy3 comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/ribo_tumor_scallop_merged.gtf.db
+pypy3 comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/poly_tumor_scallop_merged.gtf.db
+pypy3 stat.py
 ```
