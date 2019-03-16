@@ -52,11 +52,11 @@ cd ~/kallisto/
 # Reference
 
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.pc_transcripts.fa.gz
+gunzip gencode.vM20.pc_transcripts.fa.gz
 
 mv *fa old.fa
 cat old.fa | awk -F'|' '{print $1}' > gencode.vM20.pc_transcripts.fa
 
-gunzip gencode.vM20.pc_transcripts.fa.gz
 mv *fa reference/
 
 # RNA-Seq Samples
