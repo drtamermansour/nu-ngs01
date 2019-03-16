@@ -51,3 +51,35 @@ git push
 ### The creator accept one of the previous PRs.
 
 ### Try the collaboratos features for direct pushes to the repo.
+
+---
+
+## Additional steps (SSH)
+
+### Generate SSH key
+
+`ssh-keygen -t rsa`
+
+### Add the public key to your Github account
+
+In the upper-right corner of any page, click your profile photo, then click Settings.
+
+![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/userbar-account-settings.png)
+
+In the user settings sidebar, click SSH and GPG keys.
+
+![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/settings-sidebar-ssh-keys.png)
+
+Click New SSH key or Add SSH key.
+
+![]({{site.baseurl}}/https://help.github.com/assets/images/help/settings/ssh-add-ssh-key.png)
+
+Paste your key into the "Key" field.
+
+### Test the connection
+
+`ssh -T git@github.com`
+
+### Clone using SSH
+
+### Direct push without entering the credentials
