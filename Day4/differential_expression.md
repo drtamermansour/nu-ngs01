@@ -71,7 +71,7 @@ conta install subread
 
 #### Step 1 (Indexing)
 
-```sh
+```bash
 REF_HUMAN=data/refs/22.fa
 IDX_HUMAN=data/refs/22.fa
 
@@ -87,7 +87,7 @@ hisat2-build $REF_HUMAN $IDX_HUMAN
 
 #### Step 2 (Alignment)
 
-```shell=s
+```bash
 IDX=data/refs/ERCC92.fa
 RUNLOG=runlog.txt
 
@@ -107,7 +107,7 @@ done
 
 #### Step 3 (Quantifying)
 
-```shell=shell
+```bash
 GTF=data/refs/ERCC92.gtf
 
 # Generate the counts.
