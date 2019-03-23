@@ -28,13 +28,14 @@ tar xvzf data.tar.gz
 
 ### Does this data have "spike-in" control?
 Yes there are two mixes: ERCC Mix 1 and ERCC Mix2. The spike-in consists of 92 transcripts that are present in known concentrations across a wide abundance range (from very few copies to many copies).
+[More info](http://tools.thermofisher.com/content/sfs/manuals/cms_086340.pdf)
 
 ### Description
 
 The data consists of two commercially available RNA samples:
 
-1. Universal Human Reference **(UHR)** is total RNA isolated from a diverse set of 10 cancer cell lines.
-2. Human Brain Reference **(HBR)** is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old.
+1. Universal Human Reference **(UHR)** is total RNA isolated from a diverse set of 10 cancer cell lines. [more info](https://www.chem-agilent.com/pdf/strata/740000.pdf)
+2. Human Brain Reference **(HBR)** is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old. [more info](https://assets.thermofisher.com/TFS-Assets/LSG/manuals/sp_6052.pdf)
 
 And the Human Chromosome 22 will be used as a reference.
 
@@ -53,7 +54,7 @@ And the Human Chromosome 22 will be used as a reference.
 
 ## Setup enviornemnt
 
-```shell=shell
+```bash
 conda create -n df_exp
 conda activate df_exp
 conda install hisat2
