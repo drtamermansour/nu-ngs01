@@ -37,7 +37,6 @@ The data consists of two commercially available RNA samples:
 1. Universal Human Reference **(UHR)** is total RNA isolated from a diverse set of 10 cancer cell lines. [more info](https://www.chem-agilent.com/pdf/strata/740000.pdf)
 2. Human Brain Reference **(HBR)** is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old. [more info](https://assets.thermofisher.com/TFS-Assets/LSG/manuals/sp_6052.pdf)
 
-And the Human Chromosome 22 will be used as a reference.
 
 #### The data was produced in three replicates for each condition.
 
