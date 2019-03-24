@@ -132,4 +132,22 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 | ERCC-00016 | 0             | 0             | 0             | 0             | 0             | 0             | 
 | ERCC-00017 | 0             | 0             | 0             | 0             | 0             | 2             | 
 
+
+```bash
+# Analyze the counts with DESeq1.
+cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.txt
+
+# Analyze the counts with DESeq2.
+cat counts.txt | Rscript deseq2.r 3x3 > results_deseq2.txt
+
+# Analyze the counts with EdgeR.
+cat counts.txt | Rscript edger.r 3x3 > results_edger.txt
+```
+
+
+
+
+
+
+
 ---
