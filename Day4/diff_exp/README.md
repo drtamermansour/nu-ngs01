@@ -137,18 +137,28 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 
 
 ```bash
-# Analyze the counts with DESeq1.
-cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.txt
+# Analyze the counts with DESeq1. (Try This)
+cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv 
 
 # Analyze the counts with DESeq2.
-cat counts.txt | Rscript deseq2.r 3x3 > results_deseq2.txt
+cat counts.txt | Rscript deseq2.r 3x3 > results_deseq2.tsv
 
 # Analyze the counts with EdgeR.
-cat counts.txt | Rscript edger.r 3x3 > results_edger.txt
+cat counts.txt | Rscript edger.r 3x3 > results_edger.tsv
 ```
 
+> Head DESeq1 Output
 
-#### DeSEQ1 Output
+| id         | baseMean         | baseMeanA        | baseMeanB        | foldChange       | log2FoldChange   | pval                 | padj                 | 
+|------------|------------------|------------------|------------------|------------------|------------------|----------------------|----------------------| 
+| ERCC-00130 | 29681.8244237545 | 10455.9218232761 | 48907.7270242329 | 4.67751460376823 | 2.22574215774208 | 1.16729711209977e-88 | 9.10491747437823e-87 | 
+| ERCC-00108 | 808.597670575459 | 264.877838024487 | 1352.31750312643 | 5.10543846632202 | 2.35203486825767 | 2.40956154792562e-62 | 9.39729003690993e-61 | 
+| ERCC-00136 | 1898.3382995277  | 615.744918976546 | 3180.93168007886 | 5.16598932779828 | 2.36904466305553 | 2.80841619396469e-58 | 7.30188210430821e-57 | 
+| ERCC-00116 | 952.57953992746  | 337.704944218003 | 1567.45413563692 | 4.64149004174798 | 2.21458802318734 | 1.72224091670521e-45 | 3.35836978757517e-44 | 
+
+
+
+#### DeSEQ1 Output header description
 
 - `id`: Gene or transcript name that the differential expression is computed for,
 - `baseMean`: The average normalized value across all samples,
@@ -158,6 +168,11 @@ cat counts.txt | Rscript edger.r 3x3 > results_edger.txt
 become symmetrical around 0. A log2 fold change of 1 means a doubling of the expression level, a log2 fold change of -1 shows show a halving of the expression level.
 - `pval`: The probability that this effect is observed by chance,
 - `padj`: The adjusted probability that this effect is observed by chance.
+
+#### View only rows with pval < 0.05
+
+`cat results_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_results_deseq1.tsv`
+
 
 
 ---
