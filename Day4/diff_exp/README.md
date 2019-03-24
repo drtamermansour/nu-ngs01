@@ -131,14 +131,8 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 
 
 ```bash
-# Analyze the counts with DESeq1. (Try This)
-cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv 
-
-# Analyze the counts with DESeq2.
-cat counts.txt | Rscript deseq2.r 3x3 > results_deseq2.tsv
-
-# Analyze the counts with EdgeR.
-cat counts.txt | Rscript edger.r 3x3 > results_edger.tsv
+# Analyze the counts with DESeq1.
+cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv
 ```
 
 > Head DESeq1 Output
