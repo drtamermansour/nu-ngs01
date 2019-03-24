@@ -59,7 +59,7 @@ conda activate df_exp
 conda install hisat2
 conda install kallisto
 conda install samtools
-conta install subread
+conda install subread
 ```
 
 
