@@ -73,17 +73,12 @@ conta install subread
 #### Step 1 (Indexing)
 
 ```bash
-REF_HUMAN=data/refs/22.fa
-IDX_HUMAN=data/refs/22.fa
-
 REF_ERCC=data/refs/ERCC92.fa
 IDX_ERCC=data/refs/ERCC92.fa
 
 GTF_ERCC=data/refs/ERCC92.gtf
-GTF_HUMAN=data/refs/22.gtf
 
 hisat2-build $REF_ERCC $IDX_ERCC
-hisat2-build $REF_HUMAN $IDX_HUMAN
 ```
 
 #### Step 2 (Alignment)
