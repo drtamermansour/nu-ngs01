@@ -106,6 +106,9 @@ do
 done
 ```
 
+> You can visualize BAM files using the [Integrative Genomics Viewer (IGV)](https://software.broadinstitute.org/software/igv/download)
+
+
 #### Step 3 (Quantifying)
 
 ```bash
