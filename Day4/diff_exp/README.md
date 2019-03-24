@@ -109,7 +109,7 @@ done
 > You can visualize BAM files using the [Integrative Genomics Viewer (IGV)](https://software.broadinstitute.org/software/igv/download)
 
 
-#### Step 3 (Quantifying)
+#### Step 3 (Quantification)
 
 ```bash
 GTF=data/refs/ERCC92.gtf
@@ -173,6 +173,60 @@ become symmetrical around 0. A log2 fold change of 1 means a doubling of the exp
 
 `cat results_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_results_deseq1.tsv`
 
-
-
 ---
+---
+
+# Differential Expression using pseudoalignment
+
+## What is Kallisto?
+Kallisto is a software package for quantifying transcript abundances.
+The tool perform a pseudoalignment of reads against a transcriptome, In pseudoalignment, the program tries to identify for each read the target that it originates from but not where in the target it aligns.
+This makes the algorithm much faster than a 'real' alignment algorithm.
+
+## Automate the same expirement
+
+```bash
+set -euo pipefail ## stop execution on errors, https://explainshell.com/explain?cmd=set+-euxo%20pipefail
+
+# Collect program output here.
+RUNLOG=runlog.log
+
+echo "Run by `whoami` on `date`" > $RUNLOG # write log while running.
+
+REF_ERCC=data/refs/ERCC92.fa  # Reference
+IDX_ERCC=data/refs/ERCC92.idx # Index_File Name 
+
+# Build the index if necessary.
+if [ ! -f $IDX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
+then
+    echo "*** Building kallisto index: $IDX_ERCC"
+    kallisto index -i $IDX_ERCC  $REF_ERCC 2>> $RUNLOG
+fi
+
+# Two output directories for control and brain samples.
+DIR_ERCC=ercc_kallisto
+mkdir -p $DIR_ERCC
+
+for SAMPLE in HBR UHR;
+do
+    for REPLICATE in 1 2 3;
+    do
+        # Build the name of the files (Paired End).
+        R1=data/reads/${SAMPLE}_${REPLICATE}_R1.fq
+        R2=data/reads/${SAMPLE}_${REPLICATE}_R2.fq
+
+        echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $IDX_ERCC"
+        OUT=$DIR_ERCC/${SAMPLE}_${REPLICATE}
+        kallisto quant -i $IDX_ERCC -o $OUT -b 100 $R1 $R2 2>> $RUNLOG
+
+    done
+done
+
+echo "*** Created counts for ERCC control samples."
+paste ${DIR_ERCC}/H*/abundance.tsv ${DIR_ERCC}/U*/abundance.tsv | cut -f 1,4,9,14,19,24,29  > ercc_kallisto_counts.tsv
+
+
+echo "*** Running the DESeq1 and producing the final result: ercc_kallisto_deseq1.tsv"
+cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  2>> $RUNLOG
+```
+
