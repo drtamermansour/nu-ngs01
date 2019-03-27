@@ -36,12 +36,25 @@
 
 
 <details>
-<summary>Day 2</summary>
+<summary>Day 3</summary>
 <br>
 <ol>
 <li><b>Part 1</b> | Sequence Alignment <a href="https://canvas.instructure.com">[Canvas]</a></li>
 <li><b>Part 2</b> | <a href="./Day-3/seq_alignment.md">Tutorial of Sequence Alignment</a></li>
 <li><b>Part 3</b> | <a href="./Day-3/git-tutorial.md">Git</a></li>
+</ol>
+
+</details>
+
+
+<details>
+<summary>Day 4</summary>
+<br>
+<ol>
+<li><b>Part 1</b> | Reference based assembly <a href="https://canvas.instructure.com">[Canvas]</a></li>
+<li><b>Part 2</b> | <a href="./Day-4/hisat.md">Tutorial of Reference based assembly</a></li>
+<li><b>Part 3</b> | Algorithms for de novo assembly <a href="https://canvas.instructure.com">[Canvas]</a></li>
+<li><b>Part 4</b> | <a href="./Day-4/trinity.md">Tutorial of de novo assembly</a></li>
 </ol>
 
 </details>
