@@ -22,8 +22,14 @@ concentrations across a wide abundance range (from very few copies to many copie
 ### Download
 
 ```sh
-wget -c https://transfer.sh/ExXNk/data.tar.gz
-tar xvzf data.tar.gz
+mkdir -p ~/workdir/kallisto && cd ~/workdir/kallisto
+wget -c https://0x0.st/zK57.gz -O ref.tar.gz
+tar xvzf ref.tar.gz
+
+# Extract sample_data
+
+cd ~/workdir/sample_data/ && gunzip *
+
 ```
 
 ### Does this data have "spike-in" control?
@@ -71,26 +77,29 @@ conda install subread
 #### Step 1 (Indexing)
 
 ```bash
-REF_ERCC=data/refs/ERCC92.fa
-IDX_ERCC=data/refs/ERCC92.fa
+REF_ERCC=./ref/ERCC92.fa
+IDX_ERCC=./ref/ERCC92.fa
 
-GTF_ERCC=data/refs/ERCC92.gtf
+GTF_ERCC=./ref/ERCC92.gtf
 
 hisat2-build $REF_ERCC $IDX_ERCC
+
 ```
 
 #### Step 2 (Alignment)
 
 ```bash
-IDX=data/refs/ERCC92.fa
+IDX=~/workdir/kallisto/ref/ERCC92.fa
 RUNLOG=runlog.txt
+READS=~/workdir/sample_data/
+mkdir bam
 
 for SAMPLE in HBR UHR;
 do
     for REPLICATE in 1 2 3;
     do
-        R1=data/reads/${SAMPLE}_${REPLICATE}_R1.fq
-        R2=data/reads/${SAMPLE}_${REPLICATE}_R2.fq
+        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq
+        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq
         BAM=bam/${SAMPLE}_${REPLICATE}.bam
 
         hisat2 $IDX -1 $R1 -2 $R2 | samtools sort > $BAM
@@ -105,7 +114,7 @@ done
 #### Step 3 (Quantification)
 
 ```bash
-GTF=data/refs/ERCC92.gtf
+GTF=~/workdir/kallisto/ref/ERCC92.gtf
 
 # Generate the counts.
 featureCounts -a $GTF -g gene_name -o counts.txt  bam/HBR*.bam  bam/UHR*.bam
