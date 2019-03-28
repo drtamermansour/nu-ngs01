@@ -75,3 +75,41 @@ R1="$HOME/workdir/fqData/BD143_TGACCA_L005_R1_001.pe.fq.gz"
 R2="$HOME/workdir/fqData/BD143_TGACCA_L005_R2_001.pe.fq.gz"
 /usr/bin/time -v bwa mem bwaIndex/dog_chr5.fa $R1 $R2 > BD143_TGACCA_L005.sam
 ```
+
+
+Kallisto
+========
+
+## Download reference & sample files
+```
+cd ~/workdir/sample_data
+wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.pc_transcripts.fa.gz
+gunzip gencode.vM20.pc_transcripts.fa.gz
+cat gencode.vM20.pc_transcripts.fa | awk -F'|' '{print $1}' > gencode.vM20.pc_transcripts.simplified.fa
+
+wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
+tar -xvf HBR_UHR_ERCC_ds_5pc.tar
+```
+
+
+## install [Kallisto](https://pachterlab.github.io/kallisto/)
+```
+source activate ngs1
+conda install kallisto
+```
+
+###  Run Indexing
+```
+mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
+ln -s ~/workdir/sample_data/gencode.vM20.pc_transcripts.simplified.fa .
+kallisto index -i human_pc.idx -k 25 gencode.vM20.pc_transcripts.simplified.fa
+```
+
+### Run Alignment
+```
+cd ~/workdir/kallisto_align
+R1="$HOME/workdir/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz"
+R2="$HOME/workdir/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz"
+kallisto quant -i kallistoIndex/human_pc.idx -o XX $R1 $R2 --pseudobam
+```
+
