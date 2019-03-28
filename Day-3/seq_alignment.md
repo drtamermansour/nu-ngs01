@@ -108,8 +108,8 @@ kallisto index -i human_pc.idx -k 25 gencode.vM20.pc_transcripts.simplified.fa
 ### Run Alignment
 ```
 cd ~/workdir/kallisto_align
-R1="$HOME/workdir/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz"
-R2="$HOME/workdir/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz"
+R1="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz"
+R2="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz"
 kallisto quant -i kallistoIndex/human_pc.idx -o XX $R1 $R2 --pseudobam
 ```
 
