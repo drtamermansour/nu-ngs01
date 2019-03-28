@@ -22,7 +22,7 @@ concentrations across a wide abundance range (from very few copies to many copie
 ### Download
 
 ```sh
-mkdir -p ~/workdir/kallisto && cd ~/workdir/kallisto
+mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
 wget -c https://0x0.st/zK57.gz -O ref.tar.gz
 tar xvzf ref.tar.gz
 
@@ -89,7 +89,7 @@ hisat2-build $REF_ERCC $IDX_ERCC
 #### Step 2 (Alignment)
 
 ```bash
-IDX=~/workdir/kallisto/ref/ERCC92.fa
+IDX=~/workdir/diff_exp/ref/ERCC92.fa
 RUNLOG=runlog.txt
 READS=~/workdir/sample_data/
 mkdir bam
@@ -189,8 +189,8 @@ RUNLOG=runlog.log
 
 echo "Run by `whoami` on `date`" > $RUNLOG # write log while running.
 
-REF_ERCC=data/refs/ERCC92.fa  # Reference
-IDX_ERCC=data/refs/ERCC92.idx # Index_File Name 
+REF_ERCC=./ref/ERCC92.fa  # Reference
+IDX_ERCC=./ref/ERCC92.idx # Index_File Name 
 
 # Build the index if necessary.
 if [ ! -f $IDX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
