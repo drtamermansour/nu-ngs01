@@ -83,9 +83,9 @@ Kallisto
 ## Download reference & sample files
 ```
 cd ~/workdir/sample_data
-wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M20/gencode.vM20.pc_transcripts.fa.gz
-gunzip gencode.vM20.pc_transcripts.fa.gz
-cat gencode.vM20.pc_transcripts.fa | awk -F'|' '{print $1}' > gencode.vM20.pc_transcripts.simplified.fa
+wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.pc_transcripts.fa.gz
+gunzip gencode.v29.pc_transcripts.fa.gz
+cat gencode.v29.pc_transcripts.fa | awk -F'|' '{print $1}' > gencode.v29.pc_transcripts.fa.simplified.fa
 
 wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
 tar -xvf HBR_UHR_ERCC_ds_5pc.tar
@@ -101,11 +101,13 @@ conda install kallisto
 ###  Run Indexing
 ```
 mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
-ln -s ~/workdir/sample_data/gencode.vM20.pc_transcripts.simplified.fa .
-kallisto index -i human_pc.idx -k 25 gencode.vM20.pc_transcripts.simplified.fa
+ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.fa.simplified.fa .
+kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.fa.simplified.fa
 ```
 
 ### Run Alignment
+
+
 
 ```
 cd ~/workdir/kallisto_align
