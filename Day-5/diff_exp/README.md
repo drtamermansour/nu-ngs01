@@ -29,8 +29,6 @@ wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-5/diff_exp
 
 # Extract sample_data
 
-cd ~/workdir/sample_data/ && gunzip *
-
 ```
 
 ### Does this data have "spike-in" control?
@@ -61,10 +59,9 @@ The data consists of two commercially available RNA samples:
 ## Setup enviornemnt
 
 ```bash
-conda create -n df_exp
-conda activate df_exp
-#conda install kallisto
-conda install samtools
+conda activate ngs1
+# conda install kallisto
+# conda install samtools
 conda install subread
 ```
 
@@ -79,31 +76,29 @@ conda install subread
 
 ```bash
 REF_ERCC=./ref/ERCC92.fa
-IDX_ERCC=./ref/ERCC92.fa
+INDEX_ERCC=./ref/ERCC92
 
-GTF_ERCC=./ref/ERCC92.gtf
-
-hisat2-build $REF_ERCC $IDX_ERCC
+hisat2-build $REF_ERCC $INDEX_ERCC
 
 ```
 
 #### Step 2 (Alignment)
 
 ```bash
-IDX=~/workdir/diff_exp/ref/ERCC92.fa
+INDEX=~/workdir/diff_exp/ref/ERCC92
 RUNLOG=runlog.txt
-READS=~/workdir/sample_data/
+READS_DIR=~/workdir/sample_data/
 mkdir bam
 
 for SAMPLE in HBR UHR;
 do
     for REPLICATE in 1 2 3;
     do
-        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq
-        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq
+        R1=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
+        R2=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
         BAM=bam/${SAMPLE}_${REPLICATE}.bam
 
-        hisat2 $IDX -1 $R1 -2 $R2 | samtools sort > $BAM
+        hisat2 $INDEX -1 $R1 -2 $R2 | samtools sort > $BAM
         samtools index $BAM
     done
 done
@@ -192,14 +187,14 @@ echo "Run by `whoami` on `date`" > $RUNLOG # write log while running.
 
 READS=~/workdir/sample_data/
 REF_ERCC=~/workdir/diff_exp/ref/ERCC92.fa  # Reference
-IDX_ERCC=~/workdir/diff_exp/ref/ERCC92.idx # Index_File Name 
+INDEX_ERCC=~/workdir/diff_exp/ref/ERCC92.idx # Index_File Name 
 
 
 # Build the index if necessary.
 if [ ! -f $IDX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
 then
     echo "*** Building kallisto index: $IDX_ERCC"
-    kallisto index -i $IDX_ERCC  $REF_ERCC 2>> $RUNLOG
+    kallisto index -i $INDEX_ERCC  $REF_ERCC 2>> $RUNLOG
 fi
 
 # Two output directories for control and brain samples.
@@ -211,12 +206,12 @@ do
     for REPLICATE in 1 2 3;
     do
         # Build the name of the files (Paired End).
-        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq
-        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq
+        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
+        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
 
         echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $IDX_ERCC"
         OUT=$DIR_ERCC/${SAMPLE}_${REPLICATE}
-        kallisto quant -i $IDX_ERCC -o $OUT -b 100 $R1 $R2 2>> $RUNLOG
+        kallisto quant -i $INDEX_ERCC -o $OUT -b 100 $R1 $R2 2>> $RUNLOG
 
     done
 done
