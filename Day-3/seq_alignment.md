@@ -93,9 +93,17 @@ tar -xvf HBR_UHR_ERCC_ds_5pc.tar
 
 
 ## install [Kallisto](https://pachterlab.github.io/kallisto/)
+
+> For generating BAM files, must use Kallisto's latest release.
+
 ```
-source activate ngs1
-conda install kallisto
+##### Download
+wget -c https://github.com/pachterlab/kallisto/releases/download/v0.45.1/kallisto_linux-v0.45.1.tar.gz
+
+##### Extract and move to usr/local/bin
+
+tar xvzf kallisto*gz
+sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 ```
 
 ###  Run Indexing
@@ -114,6 +122,15 @@ cd ~/workdir/kallisto_align
 R1="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz"
 R2="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz"
 kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam $R1 $R2 --pseudobam
+
+# Sorting the BAM file
+samtools sort human_pc_bam/pseudoalignments.bam -o human_pc_bam/sorted_pseudoalignments.bam
+
+# Indexing the BAM file
+samtools index human_pc_bam/sorted_pseudoalignments.bam
+
+# Visualize BAM file using IGV
+
 ```
 
 
