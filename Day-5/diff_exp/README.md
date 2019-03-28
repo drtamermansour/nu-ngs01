@@ -25,6 +25,7 @@ concentrations across a wide abundance range (from very few copies to many copie
 mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
 wget -c https://0x0.st/zK57.gz -O ref.tar.gz
 tar xvzf ref.tar.gz
+wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-5/diff_exp/deseq1.r
 
 # Extract sample_data
 
@@ -189,8 +190,10 @@ RUNLOG=runlog.log
 
 echo "Run by `whoami` on `date`" > $RUNLOG # write log while running.
 
-REF_ERCC=./ref/ERCC92.fa  # Reference
-IDX_ERCC=./ref/ERCC92.idx # Index_File Name 
+READS=~/workdir/sample_data/
+REF_ERCC=~/workdir/diff_exp/ref/ERCC92.fa  # Reference
+IDX_ERCC=~/workdir/diff_exp/ref/ERCC92.idx # Index_File Name 
+
 
 # Build the index if necessary.
 if [ ! -f $IDX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
@@ -208,8 +211,8 @@ do
     for REPLICATE in 1 2 3;
     do
         # Build the name of the files (Paired End).
-        R1=data/reads/${SAMPLE}_${REPLICATE}_R1.fq
-        R2=data/reads/${SAMPLE}_${REPLICATE}_R2.fq
+        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq
+        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq
 
         echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $IDX_ERCC"
         OUT=$DIR_ERCC/${SAMPLE}_${REPLICATE}
