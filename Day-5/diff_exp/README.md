@@ -56,8 +56,7 @@ The data consists of two commercially available RNA samples:
 ```bash
 conda create -n df_exp
 conda activate df_exp
-conda install hisat2
-conda install kallisto
+#conda install kallisto
 conda install samtools
 conda install subread
 ```
@@ -171,7 +170,7 @@ Kallisto is a software package for quantifying transcript abundances.
 The tool perform a pseudoalignment of reads against a transcriptome, In pseudoalignment, the program tries to identify for each read the target that it originates from but not where in the target it aligns.
 This makes the algorithm much faster than a 'real' alignment algorithm.
 
-## Automate the same expirement
+## Automate the same expirement with Kallisto
 
 ```bash
 set -euo pipefail ## stop execution on errors, https://explainshell.com/explain?cmd=set+-euxo%20pipefail
@@ -224,5 +223,4 @@ cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  
 | ERCC-00130 | 14840.7854784434 | 5227.93407242622 | 24453.6368844606 | 4.67749526786055 | 2.22573619391768 | 8.73963105304599e-87 | 6.81691222137587e-85 | 
 | ERCC-00108 | 404.298508194945 | 132.438264826674 | 676.158751563215 | 5.10546368489592 | 2.35204199450587 | 9.72746450192469e-59 | 3.79371115575063e-57 | 
 | ERCC-00136 | 949.168332376237 | 307.870824713046 | 1590.46584003943 | 5.16601675888527 | 2.36905232365751 | 2.5211305539385e-57  | 6.55493944024009e-56 | 
-| ERCC-00116 | 476.289329027567 | 168.851590236675 | 783.727067818459 | 4.64151428316386 | 2.21459555802611 | 1.93683785478913e-44 | 3.77683381683879e-43 | 
-
+| ERCC-00116 | 476.289329027567 | 168.851590236675 | 783.727067818459 | 4.64151428316386 | 2.21459555802611 | 1.93683785478913e-44 | 3.77683381683879e-43 |
