@@ -89,6 +89,13 @@ cat gencode.v29.pc_transcripts.fa | awk -F'|' '{print $1}' > gencode.v29.pc_tran
 
 wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
 tar -xvf HBR_UHR_ERCC_ds_5pc.tar
+
+# Download the Transcriptome Annotation File
+
+wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz
+gunzip gencode.v29.annotation.gtf.gz
+
+
 ```
 
 
@@ -113,9 +120,7 @@ ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.fa.simplified.fa .
 kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.fa.simplified.fa
 ```
 
-### Run Alignment
-
-
+### Run PseudoAlignment to generate PseudoBAM file
 
 ```
 cd ~/workdir/kallisto_align
@@ -129,9 +134,16 @@ samtools sort human_pc_bam/pseudoalignments.bam -o human_pc_bam/sorted_pseudoali
 # Indexing the BAM file
 samtools index human_pc_bam/sorted_pseudoalignments.bam
 
-# Visualize BAM file using IGV
-
 ```
 
+### Run PseudoAlignment to generate PseudoBAM file with Coordinates
+
+```
+kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam $R1 $R2 --genomebam --gtf gencode.v29.annotation.gtf
+
+# Sorting and indexing done automatically in the last step
+
+
+```
 
 
