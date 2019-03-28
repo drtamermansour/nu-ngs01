@@ -148,4 +148,4 @@ kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genom
 
 #### Visualization of human_pc_bam_gtf/*.bam
 
-![]({{site.baseurl}}/https://github.com/mr-eyes/nu-ngs01/blob/master/Day-3/pseudobam-GTF.png)
+![](/https://github.com/mr-eyes/nu-ngs01/blob/master/Day-3/pseudobam-GTF.png)
