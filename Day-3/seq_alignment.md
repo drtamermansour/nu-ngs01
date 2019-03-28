@@ -51,7 +51,6 @@ python blast2sam.py BD143_TGACCA_L005.xml > BD143_TGACCA_L005.sam
 
 ```
 
-
 BWA Alignment
 =============
 
@@ -62,6 +61,7 @@ conda install -c bioconda bwa
 ```
 
 ## index your genome
+
 ```
 mkdir -p ~/workdir/bwa_align/bwaIndex && cd ~/workdir/bwa_align/bwaIndex
 ln -s ~/workdir/sample_data/dog_chr5.fa .
@@ -69,6 +69,7 @@ bwa index -a bwtsw dog_chr5.fa
 ```
 
 ## sequence alignment
+
 ```
 cd ~/workdir/bwa_align
 R1="$HOME/workdir/fqData/BD143_TGACCA_L005_R1_001.pe.fq.gz"
@@ -143,9 +144,16 @@ kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genom
 
 # Sorting and indexing done automatically in the last step
 
-
 ```
 
 #### Visualization of human_pc_bam_gtf/*.bam
 
 ![](https://github.com/mr-eyes/nu-ngs01/blob/master/Day-3/pseudobam-GTF.png)
+
+### IGV
+
+[IGV Tutorial](https://bioinformatics-ca.github.io/resources/IGV_Tutorial.pdf)
+
+
+[Download](http://software.broadinstitute.org/software/igv/download)
+
