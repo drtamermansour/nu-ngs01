@@ -140,6 +140,7 @@ samtools index human_pc_bam/sorted_pseudoalignments.bam
 ### Run PseudoAlignment to generate PseudoBAM file with Coordinates
 
 ```
+ln -s ~/workdir/sample_data/gencode.v29.annotation.gtf .
 kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genomebam --gtf gencode.v29.annotation.gtf
 
 # Sorting and indexing done automatically in the last step
