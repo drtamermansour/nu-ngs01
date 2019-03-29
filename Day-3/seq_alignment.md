@@ -96,6 +96,9 @@ tar -xvf HBR_UHR_ERCC_ds_5pc.tar
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz
 gunzip gencode.v29.annotation.gtf.gz
 
+# subset the data
+
+head -n 36189 gencode.v29.pc_transcripts.fa.simplified.fa > gencode.v29.pc_transcripts.1000.fa
 
 ```
 
@@ -117,8 +120,8 @@ sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 ###  Run Indexing
 ```
 mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
-ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.fa.simplified.fa .
-kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.fa.simplified.fa
+ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.1000.fa.
+kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.1000.fa
 ```
 
 ### Run PseudoAlignment to generate PseudoBAM file
