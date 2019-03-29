@@ -8,7 +8,7 @@ conda install -c bioconda trinotate     # Trinotate automatic functional annotat
 conda install -c bioconda hmmer         # for searching sequence databases for sequence homologs
 ```
 
-### Identification of likely protein-coding regions in transcripts
+### Coding Region Identification
 ```
 cd ~/workdir/trinity/trinity_out_dir
 # Extract the long open reading frames
@@ -35,7 +35,7 @@ transcripts.fasta.transdecoder.gff3 : positions within the target transcripts of
 transcripts.fasta.transdecoder.bed  : bed-formatted file describing ORF positions, best for viewing using GenomeView or IGV.
 ```
 
-### Download  databases
+### Download databases for homology search
 ```
 mkdir -p ~/workdir/databases && cd ~/workdir/databases
 wget https://get.station307.com/KP5ncqK7CUb/SWISSPROT-Hmm.tar.xz
