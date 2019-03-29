@@ -1,3 +1,6 @@
+
+# Method One using our program GTF-Compare
+
 ### Create virtual evironment with conda
 ```
 conda create -n ngs-gtf python=3.6 anaconda
@@ -15,10 +18,12 @@ pypy3 -m pip install 'intervaltree<3.0'
 ```
 ### Download required files
 ```
-mkdir -p ~/gtf-compare/databases && cd ~/gtf-compare/databases
-wget https://transfer.sh/HjxD/databases.tar.xz
+mkdir -p ~/gtf-compare/gtfs && cd ~/gtf-compare/gtfs
+ln -s ~/workdir/hisat_align/ref_free.gtf .
+ln -s ~/workdir/hisat_align/ref_sup.gtf .
+# wget https://transfer.sh/HjxD/databases.tar.xz
 # wget https://transfer.sh/QeKeX/gtfs.tar.xz
-tar -xvf databases.tar.xz
+# tar -xvf databases.tar.xz
 cd ..
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/comp.py
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/stat.py
@@ -27,7 +32,15 @@ wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/sta
 ```
 source activate ngs-gtf
 cd ~/gtf-compare
-pypy3 comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/ribo_tumor_scallop_merged.gtf.db
-pypy3 comp.py -r ./databases/gencode.v27.primary_assembly.annotation.gtf.db ./databases/poly_tumor_scallop_merged.gtf.db
+pypy3 comp.py -r ./gtfs/ref_sup.gtf ./gtfs/ref_free.gtf
 pypy3 stat.py
+```
+###-----------------------------------------
+
+# Method Two using GFFCompare
+
+### Install gffcompare
+```
+source activate ngs-gtf
+conda install gffcompare
 ```
