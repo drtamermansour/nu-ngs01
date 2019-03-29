@@ -18,7 +18,7 @@ pypy3 -m pip install 'intervaltree<3.0'
 ```
 ### Download required files
 ```
-mkdir -p ~/gtf-compare/gtfs && cd ~/gtf-compare/gtfs
+mkdir -p ~/workdir/gtf-compare/gtfs && cd ~/workdir/gtf-compare/gtfs
 ln -s ~/workdir/hisat_align/ref_free.gtf .
 ln -s ~/workdir/hisat_align/ref_sup.gtf .
 # wget https://transfer.sh/HjxD/databases.tar.xz
@@ -31,8 +31,8 @@ wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/sta
 ### Run
 ```
 source activate ngs-gtf
-cd ~/gtf-compare
-pypy3 comp.py -r ./gtfs/ref_sup.gtf ./gtfs/ref_free.gtf
+mkdir -p ~/workdir/gtf-compare/method_one && cd ~/workdir/gtf-compare/method_one
+pypy3 comp.py -r ../gtfs/ref_sup.gtf ../gtfs/ref_free.gtf
 pypy3 stat.py
 ```
 ###-----------------------------------------
@@ -43,4 +43,10 @@ pypy3 stat.py
 ```
 source activate ngs-gtf
 conda install gffcompare
+```
+
+### Run
+```
+mkdir -p ~/workdir/gtf-compare/method_two && cd ~/workdir/gtf-compare/method_two
+gffcompare -r ../gtfs/ref_sup.gtf ../gtfs/ref_free.gtf
 ```
