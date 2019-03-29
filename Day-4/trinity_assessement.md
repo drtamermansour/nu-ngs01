@@ -28,7 +28,9 @@ cat align_stats.txt
 
 ```bash
 -q                 query input files are FASTQ .fq/.fastq (default)
-
+-p 				   number of threads
+--no-unal          suppress SAM records for unaligned reads
+2> 				   pipe the stderr
 
 ```
 
