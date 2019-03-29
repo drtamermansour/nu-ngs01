@@ -8,7 +8,7 @@ conda install -c bioconda trinotate     # Trinotate automatic functional annotat
 conda install -c bioconda hmmer         # for searching sequence databases for sequence homologs
 ```
 
-### Coding Region Identification
+### Coding Region Identification using [Transdecoder](https://github.com/TransDecoder/TransDecoder/wiki)
 ```
 cd ~/workdir/trinity/trinity_out_dir
 # Extract the long open reading frames
@@ -38,16 +38,14 @@ transcripts.fasta.transdecoder.bed  : bed-formatted file describing ORF position
 ### Download databases for homology search
 ```
 mkdir -p ~/workdir/databases && cd ~/workdir/databases
-wget https://get.station307.com/KP5ncqK7CUb/SWISSPROT-Hmm.tar.xz
+wget https://abdelrahmanma.com/NGS01/SWISSPROT-Hmm.tar.xz
 tar -xvf SWISSPROT-Hmm.tar.xz
-
-mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
-wget https://get.station307.com/jYiGiAN78Qd/Trinotate.sqlite.tar.xz
-tar -xvf Trinotate.sqlite.tar.xz
 ```
 
 ### Sequence homology searches
 ```
+mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
+
 ## NCBI BLAST+ aganist SwissProt database (The UniProt Knowledgebase which include the Manually annotated proteins)
 blastx -db ~/workdir/databases/mini_sprot.pep \
          -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta  \
@@ -64,6 +62,14 @@ hmmpress ~/workdir/databases/Pfam-A.hmm
 hmmscan --cpu 1 --domtblout TrinotatePFAM.out \
           ~/workdir/databases/Pfam-A.hmm \
           ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep      
+```
+
+### Trinotate boilerplate sqlite database 
+```
+# Build_Trinotate_Boilerplate_SQLite_db.pl  Trinotate  ## This step will download several data resources including the latest version of swissprot, pfam, and other companion resources, create and populate a Trinotate boilerplate sqlite database (Trinotate.sqlite)
+# Today we will download the file ready for use
+wget https://abdelrahmanma.com/NGS01/Trinotate.sqlite.tar.xz
+tar -xvf Trinotate.sqlite.tar.xz
 ```
 
 ### Preparing and Generating a Trinotate Annotation Report
