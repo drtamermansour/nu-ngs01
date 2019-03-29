@@ -31,7 +31,6 @@ cat align_stats.txt
 -p 				   number of threads
 --no-unal          suppress SAM records for unaligned reads
 2> 				   pipe the stderr
-
 ```
 
 
