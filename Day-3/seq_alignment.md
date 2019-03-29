@@ -120,7 +120,7 @@ sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 ###  Run Indexing
 ```
 mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
-ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.1000.fa.
+ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.1000.fa .
 kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.1000.fa
 ```
 
