@@ -1,13 +1,11 @@
 # Functional Annotation
-### Install
-##### Trinotate automatic functional annotation of transcriptomes
-##### TransDecoder for predicting coding regions in transcripts
 
+### Install
 ``` 
 source activate ngs1
-conda install -c bioconda transdecoder 
-conda install -c bioconda trinotate 
-conda install -c bioconda hmmer 
+conda install -c bioconda transdecoder  # TransDecoder for predicting coding regions in transcripts
+conda install -c bioconda trinotate     # Trinotate automatic functional annotation of transcriptomes
+conda install -c bioconda hmmer         # for searching sequence databases for sequence homologs
 ```
 
 ### Identification of likely protein-coding regions in transcripts
@@ -63,7 +61,7 @@ blastp -db ~/workdir/databases/mini_sprot.pep \
 
 ## HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
 hmmpress ~/workdir/databases/Pfam-A.hmm
-hmmscan --cpu 2 --domtblout TrinotatePFAM.out \
+hmmscan --cpu 1 --domtblout TrinotatePFAM.out \
           ~/workdir/databases/Pfam-A.hmm \
           ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep      
 ```
