@@ -5,7 +5,7 @@
 ### 1. Index Building + Alignment
 
 ```bash
-conda activate ngs1
+source activate ngs1
 
 cd ~/workdir/trinity
 
