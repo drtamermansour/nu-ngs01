@@ -2,7 +2,7 @@
 ```bash
 cd ~/workdir/sample_data
 wget http://genomedata.org/rnaseq-tutorial/fasta/GRCh38/chr22_with_ERCC92.fa
-gunzip chr22_with_ERCC92.fa.gz
+# gunzip chr22_with_ERCC92.fa.gz
 wget http://genomedata.org/rnaseq-tutorial/annotations/GRCh38/chr22_with_ERCC92.gtf
 #wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
 #tar -xvf HBR_UHR_ERCC_ds_5pc.tar
