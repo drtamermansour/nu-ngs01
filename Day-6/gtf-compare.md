@@ -24,14 +24,14 @@ ln -s ~/workdir/hisat_align/ref_sup.gtf .
 # wget https://transfer.sh/HjxD/databases.tar.xz
 # wget https://transfer.sh/QeKeX/gtfs.tar.xz
 # tar -xvf databases.tar.xz
-cd ..
+mkdir -p ~/workdir/gtf-compare/method_one && cd ~/workdir/gtf-compare/method_one
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/comp.py
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/stat.py
 ```
 ### Run
 ```
 source activate ngs-gtf
-mkdir -p ~/workdir/gtf-compare/method_one && cd ~/workdir/gtf-compare/method_one
+cd ~/workdir/gtf-compare/method_one
 pypy3 comp.py -r ../gtfs/ref_sup.gtf ../gtfs/ref_free.gtf
 pypy3 stat.py
 ```
