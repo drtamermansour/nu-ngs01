@@ -1,7 +1,7 @@
 # Functional Annotation
 ### Install
-#### Trinotate automatic functional annotation of transcriptomes
-#### TransDecoder for predicting coding regions in transcripts
+##### Trinotate automatic functional annotation of transcriptomes
+##### TransDecoder for predicting coding regions in transcripts
 
 ``` 
 source activate ngs1
@@ -9,12 +9,14 @@ conda install TransDecoder
 conda install Trinotate
 ```
 ### Identification of likely protein-coding regions in transcripts
+
 ```
 cd ~/workdir/trinity/trinity_out_dir
 TransDecoder.LongOrfs -t Trinity.fasta
 TransDecoder.Predict -t Trinity.fasta
 ls -1 |grep transdecoder
 ```
+### Sequence homology searches
 
 ```
 mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
@@ -35,7 +37,9 @@ hmmscan --cpu 2 --domtblout TrinotatePFAM.out \
           Trinity.fasta.transdecoder.pep
           
 ```
+
 ### Preparing and Generating a Trinotate Annotation Report
+
 ```
 Trinotate Trinotate.sqlite init \
      --gene_trans_map ../trinity/trinity_out_dir/Trinity.fasta.gene_trans_map \
@@ -49,4 +53,10 @@ Trinotate Trinotate.sqlite \
        LOAD_swissprot_blastp swissprot.blastp.outfmt6
  
 Trinotate Trinotate.sqlite LOAD_pfam TrinotatePFAM.out
+```
+### Generate the Trinotate Annotation Report
+
+```
+$TRINOTATE_HOME/Trinotate Trinotate.sqlite report > Trinotate.xls
+less Trinotate.xls
 ```
