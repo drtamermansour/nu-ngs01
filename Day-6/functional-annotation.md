@@ -19,10 +19,10 @@ ls -1 |grep transdecoder
 ### Download  databases
 ```
 mkdir -p ~/workdir/trinity/data && cd ~/workdir/trinity/data
-wget https://transfer.sh/gVCvI/SWISSPROT-Hmm.tar.xz
+wget https://get.station307.com/KP5ncqK7CUb/SWISSPROT-Hmm.tar.xz
 tar -xvf SWISSPROT-Hmm.tar.xz
 ~/workdir/trinotate && cd ~/workdir/trinotate
-wget https://transfer.sh/ZFIL8/Trinotate.sqlite.tar.xz
+wget https://get.station307.com/jYiGiAN78Qd/Trinotate.sqlite.tar.xz
 tar -xvf Trinotate.sqlite.tar.xz
 ```
 
