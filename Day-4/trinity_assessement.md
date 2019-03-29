@@ -6,7 +6,6 @@
 
 ```bash
 conda activate ngs1
-conda install bwa
 
 cd ~/workdir/trinity
 
@@ -47,4 +46,3 @@ bash $IGV -g trinity_out_dir/Trinity.fasta  bowtie2.coordSorted.bam
 ```
 
 ## Counting Full Length Trinity Transcripts
-
