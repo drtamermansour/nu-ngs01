@@ -5,56 +5,75 @@
 
 ``` 
 source activate ngs1
-conda install TransDecoder
-conda install Trinotate
+conda install -c bioconda transdecoder 
+conda install -c bioconda trinotate 
+conda install -c bioconda hmmer 
 ```
-### Identification of likely protein-coding regions in transcripts
 
+### Identification of likely protein-coding regions in transcripts
 ```
 cd ~/workdir/trinity/trinity_out_dir
-TransDecoder.LongOrfs -t Trinity.fasta
-TransDecoder.Predict -t Trinity.fasta
-ls -1 |grep transdecoder
+# Extract the long open reading frames
+TransDecoder.LongOrfs -t Trinity.fasta &> longOrf.log
+# Predict the more likely coding regions
+TransDecoder.Predict -t Trinity.fasta &> predict.log
 ```
+
+Output files 
+```
+## Trinity.fasta.transdecoder_dir
+longest_orfs.pep   : all ORFs meeting the minimum length criteria, regardless of coding potential.
+longest_orfs.gff3  : positions of all ORFs as found in the target transcripts
+longest_orfs.cds   : the nucleotide coding sequence for all detected ORFs
+longest_orfs.cds.top_500_longest   : the top 500 longest ORFs, used for training a Markov model for coding sequences.
+hexamer.scores                     : log likelihood score for each k-mer  (coding/random)
+longest_orfs.cds.scores            : the log likelihood sum scores for each ORF across each of the 6 reading frames
+longest_orfs.cds.scores.selected   : the accessions of the ORFs that were selected based on the scoring criteria (described at top)
+
+## in your current working directory
+transcripts.fasta.transdecoder.pep : peptide sequences for the final candidate ORFs; all shorter candidates within longer ORFs were removed.
+transcripts.fasta.transdecoder.cds  : nucleotide sequences for coding regions of the final candidate ORFs
+transcripts.fasta.transdecoder.gff3 : positions within the target transcripts of the final selected ORFs
+transcripts.fasta.transdecoder.bed  : bed-formatted file describing ORF positions, best for viewing using GenomeView or IGV.
+```
+
 ### Download  databases
 ```
-mkdir -p ~/workdir/trinity/data && cd ~/workdir/trinity/data
+mkdir -p ~/workdir/databases && cd ~/workdir/databases
 wget https://get.station307.com/KP5ncqK7CUb/SWISSPROT-Hmm.tar.xz
 tar -xvf SWISSPROT-Hmm.tar.xz
-~/workdir/trinotate && cd ~/workdir/trinotate
+
+mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
 wget https://get.station307.com/jYiGiAN78Qd/Trinotate.sqlite.tar.xz
 tar -xvf Trinotate.sqlite.tar.xz
 ```
 
 ### Sequence homology searches
-
 ```
-mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
-blastx -db ../trinity/trinity_out_dir/data/mini_sprot.pep \
-         -query Trinity.fasta -num_threads 2 \
-         -max_target_seqs 1 -outfmt 6 -evalue 1e-5 \
+## NCBI BLAST+ aganist SwissProt database (The UniProt Knowledgebase which include the Manually annotated proteins)
+blastx -db ~/workdir/databases/mini_sprot.pep \
+         -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta  \
+         -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
           > swissprot.blastx.outfmt6
           
-blastp -query Trinity.fasta.transdecoder.pep \
-         -db ../trinity/trinity_out_dir/data/mini_sprot.pep -num_threads 2 \
-         -max_target_seqs 1 -outfmt 6 -evalue 1e-5 \
+blastp -db ~/workdir/databases/mini_sprot.pep \
+         -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep \
+         -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
           > swissprot.blastp.outfmt6
 
-hmmpress ../data/Pfam-A.hmm
-
+## HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
+hmmpress ~/workdir/databases/Pfam-A.hmm
 hmmscan --cpu 2 --domtblout TrinotatePFAM.out \
-          ../trinity/trinity_out_dir/data/Pfam-A.hmm \
-          Trinity.fasta.transdecoder.pep
-          
+          ~/workdir/databases/Pfam-A.hmm \
+          ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep      
 ```
 
 ### Preparing and Generating a Trinotate Annotation Report
-
 ```
 Trinotate Trinotate.sqlite init \
-     --gene_trans_map ../trinity/trinity_out_dir/Trinity.fasta.gene_trans_map \
-     --transcript_fasta ../trinity/trinity_out_dir/Trinity.fasta \
-     --transdecoder_pep Trinity.fasta.transdecoder.pep
+     --gene_trans_map ~/workdir/trinity/trinity_out_dir/Trinity.fasta.gene_trans_map \
+     --transcript_fasta ~/workdir/trinity/trinity_out_dir/Trinity.fasta \
+     --transdecoder_pep ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep
 
 Trinotate Trinotate.sqlite \
        LOAD_swissprot_blastx swissprot.blastx.outfmt6
@@ -64,10 +83,10 @@ Trinotate Trinotate.sqlite \
  
 Trinotate Trinotate.sqlite LOAD_pfam TrinotatePFAM.out
 ```
-### Generate the Trinotate Annotation Report
 
+### Generate the Trinotate Annotation Report
 ```
-$TRINOTATE_HOME/Trinotate Trinotate.sqlite report > Trinotate.xls
+Trinotate Trinotate.sqlite report > Trinotate.xls
 less Trinotate.xls
 ```
 
