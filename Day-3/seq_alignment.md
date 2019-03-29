@@ -164,6 +164,6 @@ kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genom
 cd ~
 wget http://data.broadinstitute.org/igv/projects/downloads/2.5/IGV_Linux_2.5.0.zip
 unzip IGV_Linux_2.5.0.zip
+sudo echo 'export IGV=$HOME/IGV_Linux_2.5.0/igv.sh' >> ~/.bashrc
+source ~/.bashrc
 ```
-
-
