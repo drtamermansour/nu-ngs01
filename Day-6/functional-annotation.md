@@ -16,6 +16,16 @@ TransDecoder.LongOrfs -t Trinity.fasta
 TransDecoder.Predict -t Trinity.fasta
 ls -1 |grep transdecoder
 ```
+### Download  databases
+```
+mkdir -p ~/workdir/trinity/data && cd ~/workdir/trinity/data
+wget https://transfer.sh/gVCvI/SWISSPROT-Hmm.tar.xz
+tar -xvf SWISSPROT-Hmm.tar.xz
+~/workdir/trinotate && cd ~/workdir/trinotate
+wget https://transfer.sh/ZFIL8/Trinotate.sqlite.tar.xz
+tar -xvf Trinotate.sqlite.tar.xz
+```
+
 ### Sequence homology searches
 
 ```
