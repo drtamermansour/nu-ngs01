@@ -31,7 +31,7 @@ cd ~/workdir/gtf-compare/method_one
 pypy3 comp.py -r ../gtfs/ref_sup.gtf ../gtfs/ref_free.gtf
 pypy3 stat.py
 ```
-###-----------------------------------------
+---
 
 # Method Two using GFFCompare
 
