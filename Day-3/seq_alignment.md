@@ -174,4 +174,5 @@ wget http://data.broadinstitute.org/igv/projects/downloads/2.5/IGV_Linux_2.5.0.z
 unzip IGV_Linux_2.5.0.zip
 sudo echo 'export IGV=$HOME/IGV_Linux_2.5.0/igv.sh' >> ~/.bashrc
 source ~/.bashrc
+## Note: Remeber to reactivate your conda env again
 ```
