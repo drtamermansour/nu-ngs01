@@ -29,7 +29,6 @@
 <li><b>Part 1</b> | <a href="./Day-2/Fastq_exploration.md">Fastq exploration</a> and <a href="./Day-2/seqkit_examples.md">seqkit_examples</a> </li>
 <li><b>Part 2</b> | <a href="./Day-2/FASTQC_tutorial.md">FASTQC</a></li>
 <li><b>Part 3</b> | <a href="./Day-2/Trimmomatic_tutorial.md">Error trimming</a></li>
-<li><b>Part 4</b> | <a href="./Day-2/git">Git</a></li>
 </ol>
 
 </details>
