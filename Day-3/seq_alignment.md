@@ -97,9 +97,8 @@ gunzip gencode.v29.annotation.gtf.gz
 
 # Select the transcripts of Chr22
 cd ~/workdir/sample_data/
+source activate ngs1
 READS=$(grep "^chr22" gencode.v29.annotation.gtf | awk -F'\t' '{print $9}' | awk -F';' '{print $1}' | awk -F' ' '{print $2}' | awk -F'"' '{print $2}' | sort | uniq)
-
-touch gencode.v29.pc_transcripts.chr22.simplified.fa
 
 for value in $READS
     do  
