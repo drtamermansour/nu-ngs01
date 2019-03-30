@@ -20,9 +20,6 @@ pypy3 -m pip install gffutils numpy tqdm 'intervaltree<3.0'
 mkdir -p ~/workdir/gtf-compare/gtfs && cd ~/workdir/gtf-compare/gtfs
 ln -s ~/workdir/hisat_align/ref_free.gtf .
 ln -s ~/workdir/hisat_align/ref_sup.gtf .
-# wget https://transfer.sh/HjxD/databases.tar.xz
-# wget https://transfer.sh/QeKeX/gtfs.tar.xz
-# tar -xvf databases.tar.xz
 mkdir -p ~/workdir/gtf-compare/method_one && cd ~/workdir/gtf-compare/method_one
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/comp.py
 wget https://raw.githubusercontent.com/abdelrahmanMA/gtf-compare/master/code/stat.py
