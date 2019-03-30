@@ -137,6 +137,9 @@ R1="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.r
 R2="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz"
 kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam $R1 $R2 --pseudobam
 
+# install Samtools
+conda install samtools
+
 # Sorting the BAM file
 samtools sort human_pc_bam/pseudoalignments.bam -o human_pc_bam/sorted_pseudoalignments.bam
 
