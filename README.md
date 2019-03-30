@@ -56,4 +56,20 @@
 <li><b>Part 4</b> | <a href="./Day-4/hisat_stringtie.md">Tutorial of Reference based assembly</a></li>
 </ol>
 
+<summary>Day 5</summary>
+<br>
+<ol>
+<li><b>Part 1</b> | <a href="./Day-5/trinity_assessement.md">Assembly Quality Assessment</a></li>
+<li><b>Part 2</b> | <a href="./Day-5/functional-annotation.md">functional annotation of Transcriptome assemply</a></li>
+<li><b>Part 3</b> | <a href="./Day-5/gtf-compare.md">Compare Transcriptome assemplies</a></li>
+</ol>
+
+<summary>Day 6</summary>
+<br>
+<ol>
+<li><b>Part 1</b> | <a href="./Day-6/dif_exp.md">Differential expression</a></li>
+<li><b>Part 2</b> | <a href="https://github.com/mr-eyes/ngs1_project/blob/master/DESCRIPTION.md">Assignment</a></li>
+</ol>
+
+
 </details>
