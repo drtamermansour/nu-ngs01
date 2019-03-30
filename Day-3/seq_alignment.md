@@ -103,8 +103,7 @@ cd ~/workdir/sample_data/
 
 READS=$(grep "^chr22" gencode.v29.annotation.gtf | awk -F'\t' '{print $9}' | awk -F';' '{print $1}' | awk -F' ' '{print $2}' | awk -F'"' '{print $2}' | sort | uniq)
 
-rm chr22.fa
-touch chr22.fa
+touch gencode.v29.pc_transcripts.chr22.simplified.fa
 
 for value in $READS
     do  
@@ -144,8 +143,8 @@ sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
 ###  Run Indexing
 ```
 mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
-ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.1000.fa .
-kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.1000.fa
+ln -s ~/workdir/sample_data/gencode.v29.pc_transcripts.chr22.simplified.fa .
+kallisto index -i human_pc.idx -k 25 gencode.v29.pc_transcripts.chr22.simplified.fa
 ```
 
 ### Run PseudoAlignment to generate PseudoBAM file
