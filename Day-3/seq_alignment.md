@@ -82,11 +82,39 @@ Kallisto
 ========
 
 ## Download reference & sample files
-```
+
+```bash
 cd ~/workdir/sample_data
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.pc_transcripts.fa.gz
 gunzip gencode.v29.pc_transcripts.fa.gz
-cat gencode.v29.pc_transcripts.fa | awk -F'|' '{print $1}' > gencode.v29.pc_transcripts.fa.simplified.fa
+
+
+# Create empty sh file
+touch extract_chr22.sh
+
+# Open file
+code extract_chr22.sh
+
+# Copy paste the next code block in the sh file
+
+
+# ---------------------------------------------------------------------------------
+cd ~/workdir/sample_data/
+
+READS=$(grep "^chr22" gencode.v29.annotation.gtf | awk -F'\t' '{print $9}' | awk -F';' '{print $1}' | awk -F' ' '{print $2}' | awk -F'"' '{print $2}' | sort | uniq)
+
+rm chr22.fa
+touch chr22.fa
+
+for value in $READS
+    do  
+        echo "Processing: $value"
+        seqkit grep -r -p ${value} gencode.v29.pc_transcripts.fa | awk -F'|' '{print $1}' >> gencode.v29.pc_transcripts.chr22.simplified.fa
+    done
+#---------------------------------------------------------------------------------
+
+# run the sh file
+bash extract_chr22.sh
 
 wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
 tar -xvf HBR_UHR_ERCC_ds_5pc.tar
@@ -95,10 +123,6 @@ tar -xvf HBR_UHR_ERCC_ds_5pc.tar
 
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz
 gunzip gencode.v29.annotation.gtf.gz
-
-# subset the data
-
-head -n 36189 gencode.v29.pc_transcripts.fa.simplified.fa > gencode.v29.pc_transcripts.1000.fa
 
 ```
 
