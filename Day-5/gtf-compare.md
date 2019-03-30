@@ -10,12 +10,11 @@ wget https://bootstrap.pypa.io/get-pip.py
 pypy3 get-pip.py
 ```
 ### Install prerequisites
+
 ```
-pypy3 -m pip install gffutils
-pypy3 -m pip install numpy
-pypy3 -m pip install tqdm
-pypy3 -m pip install 'intervaltree<3.0'
+pypy3 -m pip install gffutils numpy tqdm 'intervaltree<3.0'
 ```
+
 ### Download required files
 ```
 mkdir -p ~/workdir/gtf-compare/gtfs && cd ~/workdir/gtf-compare/gtfs
