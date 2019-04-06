@@ -112,7 +112,7 @@ done
 #### Step 3 (Quantification)
 
 ```bash
-GTF=~/workdir/kallisto/ref/ERCC92.gtf
+GTF=~/workdir/diff_exp/ref/ERCC92.gtf
 
 # Generate the counts.
 featureCounts -a $GTF -g gene_name -o counts.txt  bam/HBR*.bam  bam/UHR*.bam
