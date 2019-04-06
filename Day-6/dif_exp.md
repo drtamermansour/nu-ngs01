@@ -234,6 +234,9 @@ paste ${DIR_ERCC}/H*/abundance.tsv ${DIR_ERCC}/U*/abundance.tsv | cut -f 1,4,9,1
 echo "*** Running the DESeq1 and producing the final result: ercc_kallisto_deseq1.tsv"
 cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  2>> $RUNLOG
 
+# Filter pval < 0.05
+cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto_deseq1.tsv
+
 ```
 > Head kallisto DeSeq1 output
 
@@ -252,8 +255,6 @@ cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  
 
 ```bash
 
-# Filter pval < 0.05
-cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto_deseq1.tsv
 cat filtered_kallisto_deseq1.tsv | Rscript draw-heatmap.r > kallisto_output.pdf
 
 ```
