@@ -25,7 +25,7 @@ concentrations across a wide abundance range (from very few copies to many copie
 mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
 wget -c https://0x0.st/zK57.gz -O ref.tar.gz
 tar xvzf ref.tar.gz
-wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/dif_exp.md
+wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/deseq1.r
 
 # Extract sample_data
 
