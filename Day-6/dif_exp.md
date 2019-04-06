@@ -62,6 +62,8 @@ The data consists of two commercially available RNA samples:
 conda activate ngs1
 # conda install kallisto
 # conda install samtools
+
+# Install subread, we will use featureCount : a software program developed for counting reads to genomic features such as genes, exons, promoters and genomic bins.
 conda install subread
 ```
 
