@@ -26,6 +26,7 @@ mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
 wget -c https://0x0.st/zK57.gz -O ref.tar.gz
 tar xvzf ref.tar.gz
 wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/deseq1.r
+wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/draw-heatmap.r
 
 # Extract sample_data
 
@@ -170,7 +171,10 @@ become symmetrical around 0. A log2 fold change of 1 means a doubling of the exp
 
 #### View only rows with pval < 0.05
 
-`cat results_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_results_deseq1.tsv`
+```bash
+cat results_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_results_deseq1.tsv
+cat filtered_results_deseq1.tsv | Rscript draw-heatmap.r > hisat_output.pdf
+```
 
 ---
 ---
@@ -239,3 +243,26 @@ cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  
 | ERCC-00108 | 404.298508194945 | 132.438264826674 | 676.158751563215 | 5.10546368489592 | 2.35204199450587 | 9.72746450192469e-59 | 3.79371115575063e-57 | 
 | ERCC-00136 | 949.168332376237 | 307.870824713046 | 1590.46584003943 | 5.16601675888527 | 2.36905232365751 | 2.5211305539385e-57  | 6.55493944024009e-56 | 
 | ERCC-00116 | 476.289329027567 | 168.851590236675 | 783.727067818459 | 4.64151428316386 | 2.21459555802611 | 1.93683785478913e-44 | 3.77683381683879e-43 |
+
+
+---
+
+## Visualize
+
+
+```bash
+
+# Filter pval < 0.05
+cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto_deseq1.tsv
+cat filtered_kallisto_deseq1.tsv | Rscript draw-heatmap.r > kallisto_output.pdf
+
+```
+
+
+
+
+
+
+
+
+
