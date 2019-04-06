@@ -198,9 +198,9 @@ INDEX_ERCC=~/workdir/diff_exp/ref/ERCC92.idx # Index_File Name
 
 
 # Build the index if necessary.
-if [ ! -f $IDX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
+if [ ! -f $INDEX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
 then
-    echo "*** Building kallisto index: $IDX_ERCC"
+    echo "*** Building kallisto index: $INDEX_ERCC"
     kallisto index -i $INDEX_ERCC  $REF_ERCC 2>> $RUNLOG
 fi
 
@@ -216,7 +216,7 @@ do
         R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
         R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
 
-        echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $IDX_ERCC"
+        echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $INDEX_ERCC"
         OUT=$DIR_ERCC/${SAMPLE}_${REPLICATE}
         kallisto quant -i $INDEX_ERCC -o $OUT -b 100 $R1 $R2 2>> $RUNLOG
 
@@ -229,6 +229,7 @@ paste ${DIR_ERCC}/H*/abundance.tsv ${DIR_ERCC}/U*/abundance.tsv | cut -f 1,4,9,1
 
 echo "*** Running the DESeq1 and producing the final result: ercc_kallisto_deseq1.tsv"
 cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  2>> $RUNLOG
+
 ```
 > Head kallisto DeSeq1 output
 
