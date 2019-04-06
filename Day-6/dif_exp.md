@@ -143,7 +143,7 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 
 ```bash
 # Analyze the counts with DESeq1.
-cat counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv
+cat simple_counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv
 ```
 
 > Head DESeq1 Output
