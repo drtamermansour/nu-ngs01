@@ -68,7 +68,7 @@ conda install subread
 
 # install r and dependicies
 conda install r
-conda install -y bioconductor-deseq bioconductor-deseq2 bioconductor-edger r-gplots
+conda install -y bioconductor-deseq r-gplots
 
 ```
 
