@@ -65,6 +65,11 @@ conda activate ngs1
 
 # Install subread, we will use featureCount : a software program developed for counting reads to genomic features such as genes, exons, promoters and genomic bins.
 conda install subread
+
+# install r and dependicies
+conda install r
+conda install -y bioconductor-deseq bioconductor-deseq2 bioconductor-edger r-gplots
+
 ```
 
 
