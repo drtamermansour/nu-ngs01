@@ -1,6 +1,6 @@
 <p align="center">
   <a href="http://bioinfo.edu.eg/">
-    <img src="https://www.fiosgenomics.com/wp-content/uploads/2017/02/ngs-icon-opt.png" alt="NGS" width="125" height="89">
+    <img src="https://www.fiosgenomics.com/wp-content/uploads/2017/02/ngs-icon-opt.png" alt="NGS" width="150" height="150">
   </a>
   <h2 align="center">NGS Data analysis course-1</h2>
 
