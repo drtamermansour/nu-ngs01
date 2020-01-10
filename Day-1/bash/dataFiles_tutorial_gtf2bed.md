@@ -9,22 +9,28 @@ bash Miniconda3-latest-Linux-x86_64.sh
 conda config --add channels r
 conda config --add channels conda-forge
 conda config --add channels bioconda
+```
+
+## create a new enviornment
+
+```
 conda create -y --name ngs1 python=3.6
 ```
 
 ## Install the tools
 
 ```
-source activate ngs1
-conda install -c bioconda ucsc-gtftogenepred
-mkdir ~/workdir/scripts && cd ~/workdir/scripts
+conda activate ngs1 # Activate the conda env
+conda install -y -c bioconda ucsc-gtftogenepred
+mkdir -p ~/workdir/scripts && cd ~/workdir/scripts
 wget https://raw.githubusercontent.com/drtamermansour/horse_trans/master/scripts/genePredToBed
-chmod 755 genePredToBed
+chmod +x genePredToBed # make it executable
 ```
 
 ## Download, unzip and explore the GTF file
+
 ```
-mkdir ~/workdir/gtfToBed && cd ~/workdir/gtfToBed
+mkdir -p ~/workdir/gtfToBed && cd ~/workdir/gtfToBed
 wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz
 gunzip gencode.v29.annotation.gtf.gz
 ```
@@ -37,5 +43,4 @@ cat gencode.v29.annotation.gpred | ~/workdir/scripts/genePredToBed > gencode.v29
 ```
 
 ## Explore the files
-
 
