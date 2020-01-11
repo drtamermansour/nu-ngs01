@@ -29,6 +29,8 @@ for f in ~/workdir/fqData/*.fq.gz;do fastqc -t 1 -f fastq -noextract $f;done
 
 Merge the output reports into one super report
 ```
+mv ../fqData/*html ./
+mv ../fqData/*zip ./
 multiqc -z -o . .
 ```
 
