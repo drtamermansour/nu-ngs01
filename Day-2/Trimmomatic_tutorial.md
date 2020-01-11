@@ -30,7 +30,7 @@ newf2U="$HOME/workdir/fqData/BD143_TGACCA_L005_R2_001.se.trim.fq.gz"
 adap="$CONDA_PREFIX/share/trimmomatic-0.39-1/adapters"
 ```
 
-### 2. Run trimmomatic
+### 3. Run trimmomatic
 
 ```bash
 trimmomatic PE -threads 1 -phred33 -trimlog trimLogFile -summary statsSummaryFile  $f1 $f2 $newf1 $newf1U $newf2 $newf2U \
