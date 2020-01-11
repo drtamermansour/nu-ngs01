@@ -1,5 +1,28 @@
 # SeqKit
 
+## Install seqkit
+
+```bash
+# Activate the enviornment
+conda activate ngs1
+
+# Install seqkit
+conda install -y seqkit
+```
+
+## Create a directory for the tutorial
+
+```
+mkdir -p ~/workdir/seqkit/ && cd ~/workdir/seqkit/
+```
+
+## Download sample data
+
+```bash
+wget ftp://mirbase.org/pub/mirbase/21/hairpin.fa.gz
+```
+
+<hr>
 
 ## 1- Read and print
 
