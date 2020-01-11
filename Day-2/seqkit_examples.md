@@ -39,7 +39,7 @@ wget ftp://mirbase.org/pub/mirbase/21/hairpin.fa.gz
 > By default, seqkit seq automatically detect the sequence type
 
 ```bash
-echo -e ">seq\nacgtryswkmbdhvACGTRYSWKMBDHV" | seqkit stats
+echo -e ">seq\nAACGATCGAATATCGCGTAGCTACGTACGC" | seqkit stats
 echo -e ">seq\nACGUN ACGUN" | seqkit stats
 echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit stats
 echo -e "@read\nACTGCN\n+\n@IICCG" | seqkit stats
@@ -106,12 +106,6 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 ### 4- Extract sequences starting with AGGCG
 
 `zcat hairpin.fa.gz | seqkit grep -s -r -i -p ^aggcg`
-
-### 5- Extract sequences with TTSAA (AgsI digest site) in SEQUENCE. Base S stands for C or G.
-
-`zcat hairpin.fa.gz | seqkit grep -s -d -i -p TTSAA`
-OR
-`zcat hairpin.fa.gz | seqkit grep -s -r -i -p TT[CG]AA`
 
 ---
 
