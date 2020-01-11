@@ -15,9 +15,14 @@ conda install -c bioconda fastqc
 conda install -c bioconda multiqc 
 ```
 
+Explore the help of FASTQC
+```
+mkdir -p ~/workdir/FASTQC_tut && cd ~/workdir/FASTQC_tut
+fastqc -h > fastqc_hlp
+```
+
 Run the FASTQC for each read end
 ```
-mkdir ~/workdir/FASTQC_tut && cd ~/workdir/FASTQC_tut
 for f in ~/workdir/fqData/*.fq.gz;do
 fastqc -t 1 -f fastq -noextract $f;done
 ```
