@@ -4,6 +4,7 @@ Sequence Alignment
 
 ## Download reference file
 ```
+mkdir -p ~/workdir/sample_data
 cd ~/workdir/sample_data
 
 ---
@@ -11,10 +12,11 @@ wget https://de.cyverse.org/dl/d/A9330898-FC54-42A5-B205-B1B2DC0E91AE/dog_chr5.f
 
 OR
 
-wget https://transfer.sh/7g7zo/dog.fa.gz -O dog_chr5.fa.gz
+wget https://github.com/drtamermansour/nu-ngs01/raw/master/Day-3/sample_data/dog_chr5.fa.gz
 ---
 
 gunzip dog_chr5.fa.gz
+
 ```
 
 BLAST Alignment
@@ -22,8 +24,8 @@ BLAST Alignment
 
 ## install [Blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs)
 ```
-source activate ngs1
-conda install -c bioconda blast 
+conda activate ngs1
+conda install -c bioconda -y blast
 ```
 
 ## index your genome
@@ -48,7 +50,7 @@ head -n500 sample.fa > sample_subset.fa
 
 ## convert to SAM
 ```
-conda install -c conda-forge biopython 
+conda install -c conda-forge -y biopython
 wget https://gist.githubusercontent.com/ozagordi/099bdb796507da8d9426/raw/6ca66616fd545fbb15d94b079e46a7c55edb54c0/blast2sam.py
 python blast2sam.py BD143_TGACCA_L005.xml > BD143_TGACCA_L005.sam
 
@@ -59,8 +61,8 @@ BWA Alignment
 
 ## install [bwa](http://bio-bwa.sourceforge.net/bwa.shtml)
 ```
-source activate ngs1
-conda install -c bioconda bwa 
+conda activate ngs1
+conda install -c bioconda -y bwa
 ```
 
 ## index your genome
@@ -88,19 +90,28 @@ Kallisto
 
 ```bash
 cd ~/workdir/sample_data
+
+# Download human transcriptome
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.pc_transcripts.fa.gz
+# OR
+wget -c https://github.com/drtamermansour/nu-ngs01/raw/master/Day-3/sample_data/gencode.v29.pc_transcripts.fa.gz
+
 gunzip gencode.v29.pc_transcripts.fa.gz
 
-wget https://transfer.sh/IbpI7/HBR_UHR_ERCC_ds_5pc.tar
+wget http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar
+
 tar -xvf HBR_UHR_ERCC_ds_5pc.tar
 
 # Download the Transcriptome Annotation File
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz
+# OR
+wget -c https://github.com/drtamermansour/nu-ngs01/raw/master/Day-3/sample_data/gencode.v29.annotation.gtf.gz
+
 gunzip gencode.v29.annotation.gtf.gz
 
 # Select the transcripts of Chr22
 cd ~/workdir/sample_data/
-source activate ngs1
+conda activate ngs1
 READS=$(grep "^chr22" gencode.v29.annotation.gtf | awk -F'\t' '{print $9}' | awk -F';' '{print $1}' | awk -F' ' '{print $2}' | awk -F'"' '{print $2}' | sort | uniq)
 
 for value in $READS
@@ -115,14 +126,8 @@ for value in $READS
 
 > For generating BAM files, must use Kallisto's latest release.
 
-```
-##### Download
-wget -c https://github.com/pachterlab/kallisto/releases/download/v0.45.1/kallisto_linux-v0.45.1.tar.gz
-
-##### Extract and move to usr/local/bin
-
-tar xvzf kallisto*gz
-sudo cp kallisto_linux-v0.45.1/kallisto /usr/local/bin/
+```bash
+conda install -c bioconda -y kallisto
 ```
 
 ###  Run Indexing
@@ -141,7 +146,7 @@ R2="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.r
 kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam $R1 $R2 --pseudobam
 
 # install Samtools
-conda install samtools
+conda install -y samtools
 
 # Sorting the BAM file
 samtools sort human_pc_bam/pseudoalignments.bam -o human_pc_bam/sorted_pseudoalignments.bam
@@ -170,7 +175,12 @@ kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genom
 [IGV Tutorial](https://bioinformatics-ca.github.io/resources/IGV_Tutorial.pdf)
 
 
+[Open IGV in the web browser](https://igv.org/app/)
+
+
+### OR run IGV locally (unrecommended)
 [Download](http://software.broadinstitute.org/software/igv/download)
+
 ```
 cd ~
 wget http://data.broadinstitute.org/igv/projects/downloads/2.5/IGV_Linux_2.5.0.zip
@@ -180,4 +190,3 @@ source ~/.bashrc
 source activate ngs1
 bash $IGV -g ../sample_data/gencode.v29.pc_transcripts.chr22.simplified.fa human_pc_bam/sorted_pseudoalignments.bam
 ```
-
