@@ -44,7 +44,7 @@ zcat $R1 $R2 | paste - - - - | awk 'BEGIN{OFS="\n";}{print ">"$1,$2}' > sample.f
 /usr/bin/time -v blastn -db blastIndex/dog_chr5.fa -query sample.fa -outfmt "6 qseqid sseqid pident qlen length qstart qend sstart send" -out BD143_TGACCA_L005.blastOut
 
 ## try the xml format
-head -n500 sample.fa > sample_subset.fa
+head -n500 sample.fa | sed 's/^>@/>/' > sample_subset.fa
 /usr/bin/time -v blastn -db blastIndex/dog_chr5.fa -query sample_subset.fa -outfmt 5 -out BD143_TGACCA_L005.xml
 ```
 
@@ -53,6 +53,19 @@ head -n500 sample.fa > sample_subset.fa
 conda install -c conda-forge -y biopython
 wget https://gist.githubusercontent.com/ozagordi/099bdb796507da8d9426/raw/6ca66616fd545fbb15d94b079e46a7c55edb54c0/blast2sam.py
 python blast2sam.py BD143_TGACCA_L005.xml > BD143_TGACCA_L005.sam
+
+# install Samtools
+conda install -y samtools
+
+# convert SAM file to BAM
+samtools view -S -b BD143_TGACCA_L005.sam -o BD143_TGACCA_L005.bam
+
+# Sorting the BAM file
+samtools sort BD143_TGACCA_L005.bam -o sorted_BD143_TGACCA_L005.bam
+
+# Indexing the BAM file
+samtools index sorted_BD143_TGACCA_L005.bam
+
 
 ```
 
