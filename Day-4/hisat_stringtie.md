@@ -10,8 +10,8 @@ wget http://genomedata.org/rnaseq-tutorial/annotations/GRCh38/chr22_with_ERCC92.
 
 ### install [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml)
 ```
-source activate ngs1
-conda install -c bioconda hisat2 
+conda activate ngs1
+conda install -c bioconda -y hisat2
 ```
 
 ### Indexing
@@ -63,8 +63,8 @@ Check the Alignment summary!
 ### Prepare the SAM file for assembly
 ```
 # install Samtools
-source activate ngs1
-conda install samtools
+conda activate ngs1
+conda install -y samtools
 # convert the SAM file into BAM file 
 samtools view -bS UHR_Rep1.sam > UHR_Rep1.bam
 #convert the BAM file to a sorted BAM file. 
@@ -73,8 +73,8 @@ samtools sort UHR_Rep1.bam -o UHR_Rep1.sorted.bam
 
 ### install stringtie
 ```
-source activate ngs1
-conda install stringtie
+conda activate ngs1
+conda install -y stringtie
 ```
 
 ### Assembly without known annotations 
@@ -86,11 +86,7 @@ cat ref_free.gtf | grep -v "^@" | awk '$3=="transcript"' | wc -l
 
 ### Assembly with known previous annotations 
 ```
-stringtie UHR_Rep1.sorted.bam --rf -l ref_sup -G ~/workdir/sample_data/chr22_with_ERCC92.gtf -o ref_sup.gtf 
+stringtie UHR_Rep1.sorted.bam --rf -l ref_sup -G ~/workdir/sample_data/chr22_with_ERCC92.gtf -o ref_sup.gtf
 ## how many transcript do you have?
 cat ref_sup.gtf | grep -v "^@" | awk '$3=="transcript"' | wc -l
 ```
-
-
-<hr>
-
