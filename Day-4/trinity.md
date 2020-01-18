@@ -1,12 +1,13 @@
 ### Install [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki)
 
-```
-source activate ngs1
-conda install -c bioconda trinity 
+```bash
+conda activate ngs1
+conda install -c bioconda -y trinity
 ```
 
 ### [Run Trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-Trinity)
-```
+
+```bash
 mkdir -p ~/workdir/trinity && cd ~/workdir/trinity
 
 R1="$HOME/workdir/sample_data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz"
@@ -21,6 +22,7 @@ Trinity --seqType fq --max_memory 2G  \
 ```
 
 ### Explaining the identifiers
+
 ```
 >TRINITY_DN1000|c115_g5_i1 len=247 path=[31015:0-148 23018:149-246]
  AATCTTTTTTGGTATTGGCAGTACTGTGCTCTGGGTAGTGATTAGGGCAAAAGAAGACAC
@@ -38,6 +40,7 @@ Because a given run of trinity involves many clusters of reads, each of which ar
 ```
 
 ### Explore the assembly 
-```
+
+```bash
 TrinityStats.pl trinity_out_dir/Trinity.fasta
 ```
