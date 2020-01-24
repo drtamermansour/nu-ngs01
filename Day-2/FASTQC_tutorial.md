@@ -11,7 +11,8 @@ tar xvzf samples.tar.gz
 ## Create conda env
 
 ```
-conda create -n ngs1
+## create the conda env if you have not already did
+conda create -y --name ngs1 python=3.6
 ```
 
 ## Install the software
