@@ -10,7 +10,7 @@ tar xvzf samples.tar.gz
 
 ## Install the software
 ```
-source activate ngs1
+conda activate ngs1
 conda install -c bioconda fastqc 
 conda install -c bioconda multiqc 
 ```
