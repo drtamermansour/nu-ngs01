@@ -8,6 +8,12 @@ wget https://de.cyverse.org/dl/d/3CE425D7-ECDE-46B8-AB7F-FAF07048AD42/samples.ta
 tar xvzf samples.tar.gz
 ```
 
+## Create conda env
+
+```
+conda create -n ngs1
+```
+
 ## Install the software
 ```
 conda activate ngs1
