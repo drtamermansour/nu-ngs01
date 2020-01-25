@@ -95,7 +95,7 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 `zcat hairpin.fa.gz | seqkit grep -r -p ^hsa`
 
-### 2- Remove human and mice hairpins.
+### 2- Extract human and mice hairpins.
 
 `zcat hairpin.fa.gz | seqkit grep -r -p ^hsa -p ^mmu`
 
