@@ -8,6 +8,17 @@ wget https://de.cyverse.org/dl/d/3CE425D7-ECDE-46B8-AB7F-FAF07048AD42/samples.ta
 tar xvzf samples.tar.gz
 ```
 
+## Install [bioconda](https://docs.conda.io/en/latest/miniconda.html) if you don't have it already
+
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+## restart the terminal
+conda config --add channels r
+conda config --add channels conda-forge
+conda config --add channels bioconda
+```
+
 ## Create conda env
 
 ```
