@@ -12,7 +12,7 @@ tar xvzf samples.tar.gz
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh  ## follow the prompt. Keep pressing ENTER or responding by yes when needed :)
 ## restart the terminal
 conda config --add channels r
 conda config --add channels conda-forge
