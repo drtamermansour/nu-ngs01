@@ -34,5 +34,13 @@ adap="$CONDA_PREFIX/share/trimmomatic-0.39-1/adapters"
 
 ```bash
 trimmomatic PE -threads 1 -phred33 -trimlog trimLogFile -summary statsSummaryFile  $f1 $f2 $newf1 $newf1U $newf2 $newf2U \
-ILLUMINACLIP:$adap/TruSeq3-PE.fa:2:30:10:1 SLIDINGWINDOW:4:15 MINLEN:36
+ILLUMINACLIP:$adap/TruSeq3-PE-2.fa:2:30:10:1 SLIDINGWINDOW:4:15 MINLEN:36
 ```
+
+
+Check the files in the adaptor folder (Source and more discussion at: https://www.biostars.org/p/323087/). You can see:
+1. TruSeq2-PE.fa: Old libraries (usually data from the GAII), 
+2. TruSeq3-PE.fa: libraries from the HiSeq or later machines until Nextera
+3. TruSeq2-SE.fa and ruSeq3-SE.fa: as above but for SE libraries
+4. TruSeq3-PE-2.fa: contains some additional sequences which find partial adapters in unusual location/orientation.
+5. NexteraPE-PE.fa: as TruSeq3-PE-2.fa but for Nextera
