@@ -9,7 +9,7 @@ wget https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/sample_data/hairp
 
 ## Install [SeqKit](https://bioinf.shenwei.me/seqkit/)
 ```
-source activate ngs1
+conda activate ngs1
 conda install -c bioconda seqkit
 ```
 
@@ -17,7 +17,7 @@ conda install -c bioconda seqkit
 ```
 cd ~/workdir/
 ## What seqkit can do?
-seqkit -h > seqkit.help
+seqkit -h > seqkit.help  ## compare to the software homepage (https://bioinf.shenwei.me/seqkit/) 
 ## some stats
 seqkit stat sample_data/*
 ## GC content: seqkit fx2tab coverts FASTA/Q to 3-column tabular format (1st: name/ID, 2nd: sequence, 3rd: quality), and can also provide various information in new columns, including sequence length, GC content/GC skew, alphabet
