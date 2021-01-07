@@ -44,3 +44,12 @@ Check the files in the adaptor folder (Source and more discussion at: https://ww
 3. TruSeq2-SE.fa and ruSeq3-SE.fa: as above but for SE libraries
 4. TruSeq3-PE-2.fa: contains some additional sequences which find partial adapters in unusual location/orientation.
 5. NexteraPE-PE.fa: as TruSeq3-PE-2.fa but for Nextera
+
+
+Note: Specifying a trimlog file creates a log of all read trimmings, indicating the following details:
+1. the read name
+2. the surviving sequence length
+3. the location of the first surviving base, aka. the amount trimmed from the start
+4. the location of the last surviving base in the original read
+5 . the amount trimmed from the end
+
