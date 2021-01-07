@@ -51,5 +51,5 @@ Note: Specifying a trimlog file creates a log of all read trimmings, indicating 
 2. the surviving sequence length
 3. the location of the first surviving base, aka. the amount trimmed from the start
 4. the location of the last surviving base in the original read
-5 . the amount trimmed from the end
+5. the amount trimmed from the end
 
