@@ -7,11 +7,12 @@ Sequence Alignment
 mkdir -p ~/workdir/sample_data
 cd ~/workdir/sample_data
 
----
+# Use one of the 2 links for download
+# Link 1
 wget https://de.cyverse.org/dl/d/A9330898-FC54-42A5-B205-B1B2DC0E91AE/dog_chr5.fa.gz
 
-OR
-
+# OR
+# Link 2
 wget https://github.com/drtamermansour/nu-ngs01/raw/master/Day-3/sample_data/dog_chr5.fa.gz
 ---
 
