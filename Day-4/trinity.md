@@ -1,8 +1,22 @@
+### Download the sequencing data (if it is not already downloaded)
+
+```bash
+mkdir -p ~/workdir/sample_data && cd ~/workdir/sample_data
+
+if [ ! -f HBR_UHR_ERCC_ds_5pc.tar ];then 
+  wget http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar
+  tar -xvf HBR_UHR_ERCC_ds_5pc.tar
+else
+  echo "the TAR file already exist"
+fi
+```
+
 ### Install [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki)
 
 ```bash
 conda activate ngs1
 conda install -c bioconda -y trinity
+conda install -c bioconda -y bowtie  ## bowtie is a short read aligner that triniy uses 
 ```
 
 ### [Run Trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-Trinity)
@@ -19,6 +33,20 @@ Trinity --seqType fq --max_memory 2G  \
         --SS_lib_type RF \
         --CPU 1 \
         --quality_trimming_params "ILLUMINACLIP:$TRIMMOMATIC_DIR/adapters/TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:5 MINLEN:25"
+```
+
+### What is SS_lib_type?
+
+```
+--SS_lib_type <string>          :Strand-specific RNA-Seq read orientation.
+
+Paired reads:
+    *  RF: first read (/1) of fragment pair is sequenced as anti-sense (reverse(R)), and second read (/2) is in the sense strand (forward(F)); typical of the dUTP/UDG sequencing method.
+    *  FR: first read (/1) of fragment pair is sequenced as sense (forward), and second read (/2) is in the antisense strand (reverse)
+    
+Unpaired (single) reads:
+    *  F: the single read is in the sense (forward) orientation
+    *  R: the single read is in the antisense (reverse) orientation
 ```
 
 ### Explaining the identifiers
