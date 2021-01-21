@@ -51,8 +51,8 @@
 <ol>
 <li><b>Part 1</b> | Algorithms for de novo assembly <a href="https://canvas.instructure.com">[Canvas]</a></li>
 <li><b>Part 2</b> | <a href="./Day-4/trinity.md">Tutorial of de novo assembly</a></li>
-<li><b>Part 3</b> | Reference based assembly <a href="https://canvas.instructure.com">[Canvas]</a></li>
-<li><b>Part 4</b> | <a href="./Day-4/hisat_stringtie.md">Tutorial of Reference based assembly</a></li>
+<li><b>Part 3</b> | <a href="./Day-4/trinity_assessement.md">Assembly Quality Assessment</a></li>
+<li><b>Part 4</b> | <a href="./Day-5/functional-annotation.md">functional annotation of Transcriptome assemply</a></li>
 </ol>
 </details>
 
@@ -60,8 +60,8 @@
 <summary>Day 5</summary>
 <br>
 <ol>
-<li><b>Part 1</b> | <a href="./Day-5/trinity_assessement.md">Assembly Quality Assessment</a></li>
-<li><b>Part 2</b> | <a href="./Day-5/functional-annotation.md">functional annotation of Transcriptome assemply</a></li>
+<li><b>Part 1</b> | Reference based assembly <a href="https://canvas.instructure.com">[Canvas]</a></li>
+<li><b>Part 2</b> | <a href="./Day-4/hisat_stringtie.md">Tutorial of Reference based assembly</a></li>
 <li><b>Part 3</b> | <a href="./Day-5/gtf-compare.md">Compare Transcriptome assemplies</a></li>
 </ol>
 </details>
