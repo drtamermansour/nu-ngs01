@@ -5,7 +5,8 @@
 ### 1. Index Building + Alignment
 
 ```bash
-source activate ngs1
+conda activate ngs1
+conda install -c bioconda -y bowtie2
 
 mkdir -p ~/workdir/trinity/trinity_out_dir/bowtie2_assessment/index  && cd ~/workdir/trinity/trinity_out_dir/bowtie2_assessment 
 
