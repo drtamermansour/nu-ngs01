@@ -192,15 +192,15 @@ kallisto quant -i kallistoIndex/human_pc.idx -o human_pc_bam_gtf $R1 $R2 --genom
 [Open IGV in the web browser](https://igv.org/app/)
 
 
-### OR run IGV locally (unrecommended)
+### OR run IGV locally
 [Download](http://software.broadinstitute.org/software/igv/download)
 
 ```
 cd ~
-wget http://data.broadinstitute.org/igv/projects/downloads/2.5/IGV_Linux_2.5.0.zip
-unzip IGV_Linux_2.5.0.zip
-sudo echo 'export IGV=$HOME/IGV_Linux_2.5.0/igv.sh' >> ~/.bashrc
+wget https://data.broadinstitute.org/igv/projects/downloads/2.8/IGV_Linux_2.8.13_WithJava.zip
+unzip IGV_Linux_2.8.13_WithJava.zip
+sudo echo 'export IGV=$HOME/IGV_Linux_2.8.13/igv.sh' >> ~/.bashrc
 source ~/.bashrc
-source activate ngs1
+conda activate ngs1
 bash $IGV -g ../sample_data/gencode.v29.pc_transcripts.chr22.simplified.fa human_pc_bam/sorted_pseudoalignments.bam
 ```
