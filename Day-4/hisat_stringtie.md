@@ -90,3 +90,19 @@ stringtie UHR_Rep1.sorted.bam --rf -l ref_sup -G ~/workdir/sample_data/chr22_wit
 ## how many transcript do you have?
 cat ref_sup.gtf | grep -v "^#" | awk '$3=="transcript"' | wc -l
 ```
+
+---
+
+# Compare assemblies 
+
+### Install [gffcompare](https://ccb.jhu.edu/software/stringtie/gffcompare.shtml)
+```
+conda activate ngs1
+conda install -y gffcompare
+```
+
+### Run
+```
+cd ~/workdir/hisat_align
+gffcompare -r ref_sup.gtf ref_free.gtf   ## -r recieves reference annotation file (GTF/GFF) 
+```
