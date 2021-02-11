@@ -19,16 +19,20 @@ concentrations across a wide abundance range (from very few copies to many copie
 
 ## Prepare the data
 
-### Download
+### Download the data (if it is not already downloaded. You should have done this for denovo assembly)
 
 ```sh
-mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
-wget -c https://0x0.st/zK57.gz -O ref.tar.gz
-tar xvzf ref.tar.gz
-wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/deseq1.r
-wget -c https://raw.githubusercontent.com/mr-eyes/nu-ngs01/master/Day-6/draw-heatmap.r
+mkdir -p ~/workdir/sample_data && cd ~/workdir/sample_data
 
-# Extract sample_data
+if [ ! -f HBR_UHR_ERCC_ds_5pc.tar ];then 
+  wget http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar
+  tar -xvf HBR_UHR_ERCC_ds_5pc.tar
+else
+  echo "the TAR file already exist"
+fi
+
+# Save the path for your samples in a variable to use later
+READS_DIR=~/workdir/sample_data/
 
 ```
 
@@ -38,7 +42,7 @@ Yes there are two mixes: ERCC Mix 1 and ERCC Mix2. The spike-in consists of 92 t
 
 ### Description
 
-The data consists of two commercially available RNA samples:
+The data consists of 3 replicates from each of two commercially available RNA samples:
 
 1. Universal Human Reference **(UHR)** is total RNA isolated from a diverse set of 10 cancer cell lines. [more info](https://www.chem-agilent.com/pdf/strata/740000.pdf)
 2. Human Brain Reference **(HBR)** is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old. [more info](https://assets.thermofisher.com/TFS-Assets/LSG/manuals/sp_6052.pdf)
@@ -53,60 +57,79 @@ The data consists of two commercially available RNA samples:
 5. HBR + ERCC Mix2, Replicate 2, **UHR_2**
 6. HBR + ERCC Mix2, Replicate 3, **UHR_3**
 
-`tree data` to see the folders structure.
-
 ---
 
 ## Setup enviornemnt
 
 ```bash
 conda activate ngs1
-# conda install kallisto
-# conda install samtools
+# For alignment and quantification: we will try 2 options:
+# A) Genome-based alignment by Hisat2 then quantification by featureCounts
 
+# Install Hisat2 and samtools 
+conda install -c bioconda -y hisat2
+conda install -y samtools
 # Install subread, we will use featureCount : a software program developed for counting reads to genomic features such as genes, exons, promoters and genomic bins.
 conda install subread
+# Download the reference and its GTF annotation (if they are not already downloaded. You should have done this for reference-based assembly)
+cd ~/workdir/sample_data
+if [ ! -f chr22_with_ERCC92.fa ];then 
+  wget http://genomedata.org/rnaseq-tutorial/fasta/GRCh38/chr22_with_ERCC92.fa
+else
+  echo "the chr22_with_ERCC92.fa file already exist"
+fi
 
-# install r and dependicies
+if [ ! -f chr22_with_ERCC92.gtf ];then 
+  wget http://genomedata.org/rnaseq-tutorial/annotations/GRCh38/chr22_with_ERCC92.gtf
+else
+  echo "the chr22_with_ERCC92.gtf file already exist"
+fi
+# Save the path for the reference and annotation in variables to use later
+REF=~/workdir/sample_data/chr22_with_ERCC92.fa
+GTF=~/workdir/sample_data/chr22_with_ERCC92.gtf
+
+# B) Transcriptome-based psudo-alignment and quantification by kallisto
+
+# Install Kallisto
+conda install -c bioconda -y kallisto
+
+# Kallisto needs a reference transcriptome. Transform the GTF/REF into fasta file
+conda install -c bioconda gffread
+gffread chr22_with_ERCC92.gtf -g chr22_with_ERCC92.fa -w chr22_with_ERCC92_transcripts.fasta 
+
+
+# For differential expressiona, we will use DESeq R package and for visualization, we will use gplots package. 
 conda install r
 conda install -y bioconductor-deseq r-gplots
+https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/deseq1.r
+https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/draw-heatmap.r
 
 ```
 
 
 ---
 
-## Analyzing control samples
 
-### Alignment: Hisat2
-
-#### Step 1 (Indexing)
+#### Genome-based alignment pipeline  (Hisat2 for alignmnet, featureCounts for quantification and DESeq for DE) 
 
 ```bash
-REF_ERCC=./ref/ERCC92.fa
-INDEX_ERCC=./ref/ERCC92
+## Hisat2 Indexing
+## You should have generated this index already before (if not, see how to do this in the reference-based assembly lecture)
+hisatIndex=~/workdir/hisat_align/hisatIndex/chr22_with_ERCC92
 
-hisat2-build $REF_ERCC $INDEX_ERCC
 
-```
-
-#### Step 2 (Alignment)
-
-```bash
-INDEX=~/workdir/diff_exp/ref/ERCC92
-RUNLOG=runlog.txt
-READS_DIR=~/workdir/sample_data/
-mkdir bam
-
+## Alignment
+mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
+mkdir -p bams
 for SAMPLE in HBR UHR;
 do
     for REPLICATE in 1 2 3;
     do
         R1=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
         R2=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
-        BAM=bam/${SAMPLE}_${REPLICATE}.bam
+        BAM=bams/${SAMPLE}_${REPLICATE}.bam
 
-        hisat2 $INDEX -1 $R1 -2 $R2 | samtools sort > $BAM
+        hisat2 $hisatIndex -1 $R1 -2 $R2 | samtools sort > $BAM
         samtools index $BAM
     done
 done
@@ -115,13 +138,10 @@ done
 > You can visualize BAM files using the [Integrative Genomics Viewer (IGV)](https://software.broadinstitute.org/software/igv/download)
 
 
-#### Step 3 (Quantification)
-
 ```bash
-GTF=~/workdir/diff_exp/ref/ERCC92.gtf
 
-# Generate the counts.
-featureCounts -a $GTF -g gene_name -o counts.txt  bam/HBR*.bam  bam/UHR*.bam
+## Quantification
+featureCounts -a $GTF -g gene_name -o counts.txt  bams/HBR*.bam  bams/UHR*.bam
 
 # Simplify the file to keep only the count columns.
 cat counts.txt | cut -f 1,7-12 > simple_counts.txt
@@ -143,7 +163,7 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 
 
 ```bash
-# Analyze the counts with DESeq1.
+## Differential expression by DESeq1
 cat simple_counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv
 ```
 
@@ -179,6 +199,8 @@ cat filtered_results_deseq1.tsv | Rscript draw-heatmap.r > hisat_output.pdf
 ---
 ---
 
+#### Transcriptome-based psuod-alignment pipeline  (Kallisto for psudo-alignmnet & quantification and DESeq for DE) 
+
 # Differential Expression using pseudoalignment
 
 ## What is Kallisto?
@@ -189,50 +211,44 @@ This makes the algorithm much faster than a 'real' alignment algorithm.
 ## Automate the same expirement with Kallisto
 
 ```bash
-set -euo pipefail ## stop execution on errors, https://explainshell.com/explain?cmd=set+-euxo%20pipefail
 
-# Collect program output here.
-RUNLOG=runlog.log
-
-echo "Run by `whoami` on `date`" > $RUNLOG # write log while running.
-
-READS=~/workdir/sample_data/
-REF_ERCC=~/workdir/diff_exp/ref/ERCC92.fa  # Reference
-INDEX_ERCC=~/workdir/diff_exp/ref/ERCC92.idx # Index_File Name 
+## Kallisto indexing
+mkdir -p ~/workdir/kallisto_align/kallistoIndex && cd ~/workdir/kallisto_align/kallistoIndex
+ln -s ~/workdir/sample_data/chr22_with_ERCC92_transcripts.fasta .
+kallisto index -i chr22_with_ERCC92_transcripts.idx -k 25 chr22_with_ERCC92_transcripts.fasta
 
 
-# Build the index if necessary.
-if [ ! -f $INDEX_ERCC ] # Check if the file data/refs/ERCC92.idx exists
-then
-    echo "*** Building kallisto index: $INDEX_ERCC"
-    kallisto index -i $INDEX_ERCC  $REF_ERCC 2>> $RUNLOG
-fi
-
-# Two output directories for control and brain samples.
-DIR_ERCC=ercc_kallisto
-mkdir -p $DIR_ERCC
-
+## Psudo-alignment and quantification
+kallistoIndex=~/workdir/kallisto_align/kallistoIndex/chr22_with_ERCC92_transcripts.idx 
+mkdir -p ~/workdir/diff_exp && cd ~/workdir/diff_exp/
+mkdir -p quants
 for SAMPLE in HBR UHR;
 do
     for REPLICATE in 1 2 3;
     do
         # Build the name of the files (Paired End).
-        R1=$READS/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
-        R2=$READS/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
+        R1=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read1.fastq.gz
+        R2=$READS_DIR/${SAMPLE}_Rep${REPLICATE}*read2.fastq.gz
 
-        echo "*** Running kallisto on ${SAMPLE}_${REPLICATE} vs $INDEX_ERCC"
-        OUT=$DIR_ERCC/${SAMPLE}_${REPLICATE}
-        kallisto quant -i $INDEX_ERCC -o $OUT -b 100 $R1 $R2 2>> $RUNLOG
-
+        echo "*** Running kallisto on ${SAMPLE}_${REPLICATE}"
+        OUT=quants/${SAMPLE}_${REPLICATE}
+        kallisto quant -i $kallistoIndex -o $OUT -b 100 $R1 $R2 
     done
 done
 
 echo "*** Created counts for ERCC control samples."
-paste ${DIR_ERCC}/H*/abundance.tsv ${DIR_ERCC}/U*/abundance.tsv | cut -f 1,4,9,14,19,24,29  > ercc_kallisto_counts.tsv
+for quant_file in quants/*/abundance.tsv;do
+  id=$(echo $quant_file | awk -F"/" '{print $2}'); 
+  echo $id
+  quant_file_simplified=$(dirname $quant_file)/abundance_simplified.tsv
+  echo "target_id $id" | tr ' ' '\t' > $quant_file_simplified
+  tail -n+2 $quant_file | cut -f 1,4 >> $quant_file_simplified
+done
+paste quants/H*/abundance_simplified.tsv quants/U*/abundance_simplified.tsv | cut -f 1,2,4,6,8,10,12  > ercc_kallisto_counts.tsv
 
-
+## Differential expression by DESeq1
 echo "*** Running the DESeq1 and producing the final result: ercc_kallisto_deseq1.tsv"
-cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv  2>> $RUNLOG
+cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv 
 
 # Filter pval < 0.05
 cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto_deseq1.tsv
