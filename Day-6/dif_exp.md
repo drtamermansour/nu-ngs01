@@ -59,11 +59,15 @@ The data consists of 3 replicates from each of two commercially available RNA sa
 
 ---
 
-## Setup enviornemnt
+## Setup enviornemnt for alignment and quantification
 
 ```bash
+# For alignment and quantification: we will try 2 options: 
+# A) Genome-based alignment by Hisat2 then quantification by featureCounts 
+# B) Transcriptome-based psudo-alignment and quantification by kallisto
+
+
 conda activate ngs1
-# For alignment and quantification: we will try 2 options:
 # A) Genome-based alignment by Hisat2 then quantification by featureCounts
 
 # Install Hisat2 and samtools 
@@ -96,9 +100,12 @@ conda install -c bioconda -y kallisto
 # Kallisto needs a reference transcriptome. Transform the GTF/REF into fasta file
 conda install -c bioconda gffread
 gffread chr22_with_ERCC92.gtf -g chr22_with_ERCC92.fa -w chr22_with_ERCC92_transcripts.fasta 
+```
 
+## Setup enviornemnt for differential expression & visualization
 
-# For differential expressiona, we will use DESeq R package and for visualization, we will use gplots package. 
+```bash
+# For differential expression, we will use DESeq R package and for visualization, we will use gplots package. 
 conda install r
 conda install -y bioconductor-deseq r-gplots
 https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/deseq1.r
