@@ -117,7 +117,7 @@ https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/draw-heat
 ---
 
 
-#### Genome-based alignment pipeline  (Hisat2 for alignmnet, featureCounts for quantification and DESeq for DE) 
+## A) Genome-based alignment pipeline  (Hisat2 for alignmnet, featureCounts for quantification and DESeq for DE) 
 
 ```bash
 ## Hisat2 Indexing
@@ -204,11 +204,8 @@ cat filtered_results_deseq1.tsv | Rscript draw-heatmap.r > hisat_output.pdf
 ```
 
 ---
----
 
-#### Transcriptome-based psuod-alignment pipeline  (Kallisto for psudo-alignmnet & quantification and DESeq for DE) 
-
-# Differential Expression using pseudoalignment
+## B) Transcriptome-based psudo-alignment pipeline  (Kallisto for psudo-alignmnet & quantification and DESeq for DE) 
 
 ## What is Kallisto?
 Kallisto is a software package for quantifying transcript abundances.
