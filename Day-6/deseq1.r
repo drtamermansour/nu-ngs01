@@ -1,5 +1,5 @@
 # This program can be run as
-# cat counts.txt | Rscript deseq1.r
+# cat counts.txt | Rscript deseq1.r NxM (where N is the number of groups and M is the number of replicates per group)
 
 # and produces a table with differentially expressed genes.
 # To install the requirements run the program with the 'install` parameter.
@@ -13,12 +13,6 @@ if (length(args)!=1) {
 }
 
 first = args[1]
-
-if (first == 'install') {
-    source("http://bioconductor.org/biocLite.R")
-    biocLite("DESeq") ## Install or Update Bioconductor package DESeq
-    stop("Installation completed", call.=FALSE)
-}
 
 # Extract the experimental design from the command line.
 design = unlist(strsplit(first, 'x'))
