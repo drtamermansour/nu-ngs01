@@ -40,7 +40,7 @@ READS_DIR=~/workdir/sample_data/
 Yes there are two mixes: ERCC Mix 1 and ERCC Mix2. The spike-in consists of 92 transcripts that are present in known concentrations across a wide abundance range (from very few copies to many copies).
 [More info](http://tools.thermofisher.com/content/sfs/manuals/cms_086340.pdf)
 
-### Description
+### Data Description
 
 The data consists of 3 replicates from each of two commercially available RNA samples:
 
