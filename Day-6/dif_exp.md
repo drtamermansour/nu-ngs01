@@ -108,8 +108,9 @@ gffread chr22_with_ERCC92.gtf -g chr22_with_ERCC92.fa -w chr22_with_ERCC92_trans
 # For differential expression, we will use DESeq R package and for visualization, we will use gplots package. 
 conda install r
 conda install -y bioconductor-deseq r-gplots
-https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/deseq1.r
-https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/draw-heatmap.r
+mkdir -p ~/scripts && cd ~/scripts
+wget https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/deseq1.r
+wget https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/draw-heatmap.r
 
 ```
 
@@ -171,7 +172,16 @@ cat counts.txt | cut -f 1,7-12 > simple_counts.txt
 
 ```bash
 ## Differential expression by DESeq1
-cat simple_counts.txt | Rscript deseq1.r 3x3 > results_deseq1.tsv
+cat simple_counts.txt | Rscript ~/scripts/deseq1.r 3x3 > results_deseq1.tsv
+
+## Note
+# In am last minute update, I noticed that running R scripts throws an error (libreadline.so.6 not found).
+# It looks like a conflict in dependancies of the intsalled packages
+# One way to solve this is to create a seperate env for r
+# Installing an old version of realine solved the problem but still it carries the the risk that one of other packages might fail to run
+conda install -c conda-forge readline=6.2
+
+
 ```
 
 > Head DESeq1 Output
@@ -200,7 +210,7 @@ become symmetrical around 0. A log2 fold change of 1 means a doubling of the exp
 
 ```bash
 cat results_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_results_deseq1.tsv
-cat filtered_results_deseq1.tsv | Rscript draw-heatmap.r > hisat_output.pdf
+cat filtered_results_deseq1.tsv | Rscript ~/scripts/draw-heatmap.r > hisat_output.pdf
 ```
 
 ---
@@ -252,7 +262,7 @@ paste quants/H*/abundance_simplified.tsv quants/U*/abundance_simplified.tsv | cu
 
 ## Differential expression by DESeq1
 echo "*** Running the DESeq1 and producing the final result: ercc_kallisto_deseq1.tsv"
-cat ercc_kallisto_counts.tsv | Rscript deseq1.r 3x3 > ercc_kallisto_deseq1.tsv 
+cat ercc_kallisto_counts.tsv | Rscript ~/scripts/deseq1.r 3x3 > ercc_kallisto_deseq1.tsv 
 
 # Filter pval < 0.05
 cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto_deseq1.tsv
@@ -275,7 +285,7 @@ cat ercc_kallisto_deseq1.tsv | awk ' $8 < 0.05 { print $0 }' > filtered_kallisto
 
 ```bash
 
-cat filtered_kallisto_deseq1.tsv | Rscript draw-heatmap.r > kallisto_output.pdf
+cat filtered_kallisto_deseq1.tsv | Rscript ~/scripts/draw-heatmap.r > kallisto_output.pdf
 
 ```
 

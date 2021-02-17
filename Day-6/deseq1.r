@@ -34,7 +34,7 @@ counts = read.table("stdin", header=TRUE, row.names=1, sep="\t")
 # Since Kallisto generates the estimated counts as real numbers
 # and DESeq 1 allows only integers we need to convert real numbers to integers here.
 int_counts = as.matrix(counts)
-int_counts = apply(int_counts, 2, function(x) as.integer(round(x)))
+int_counts = apply(int_counts, 2, function(x) as.integer(round(x)) + 1)
 row.names(int_counts) <- row.names(counts)
 
 # Replace with integer counts
