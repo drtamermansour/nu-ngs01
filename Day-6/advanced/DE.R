@@ -144,28 +144,24 @@ nrow(ddsTximeta)
 keep <- rowSums(counts(ddsTximeta)) > 10
 ddsTximeta <- ddsTximeta[keep,]
 nrow(ddsddsTximeta)
-# Filter based on having mimimum no of samples with minimal no of reads
+# AND/OR Filter based on having mimimum no of samples with minimal no of reads
 keep <- rowSums(counts(ddsTximeta) >= 10) >= 3
 ddsTximeta <- ddsTximeta[keep,]
 nrow(ddsddsTximeta)
 
-# 1. install and load of visualization package
+# 2. Test for variance stabilizing
+# Exploratory analysis of multidimensional data (e.g. clustering and PCA) works best for data that has the same range of variance at different ranges of the mean values (i.e. homoskedastic data). However, for RNA-seq counts, the expected variance grows with the mean. Therefor, the resulting plot typically depends mostly on the genes with highest counts because they show the largest absolute differences between samples
+# Let us test the relation between mean and variance in real and simulated RNA-count data
+
 if (!requireNamespace("vsn", quietly = TRUE))
     BiocManager::install("vsn")
 if (!requireNamespace("hexbin", quietly = TRUE))
     BiocManager::install("hexbin")
-if (!requireNamespace("dplyr", quietly = TRUE))
-    BiocManager::install("dplyr")
-if (!requireNamespace("ggplot2", quietly = TRUE))
-    BiocManager::install("ggplot2")
 
-# 2. Test for variance stabilizing
-# Exploratory analysis of multidimensional data (e.g. clustering and PCA) works best for data that has the same range of variance at different ranges of the mean values (i.e. homoskedastic data). However, for RNA-seq counts, the expected variance grows with the mean. Therefor, the resulting plot typically depends mostly on the genes with highest counts because they show the largest absolute differences between samples
-# Let us test the relation between mean and variance in real and simulated RNA-count data
 library("hexbin")
 library("vsn")
 
-# 1. simulated data
+# a. simulated data
 lambda <- 10^seq(from = -1, to = 2, length = 1000) ## jpeg('lambda.jpg'); plot(density(lambda)); dev.off();     
 cts_sim <- matrix(rpois(1000*100, lambda), ncol = 100)
 jpeg('cts_sim.meanSdPlot.jpg')
@@ -188,20 +184,20 @@ jpeg('cts_real2.meanSdPlot.jpg')
 meanSdPlot(cts_real2, ranks = FALSE)
 dev.off()
 
-# A simple and often used strategy to avoid this is to take the logarithm of the normalized count values plus a pseudocount of 1; however, depending on the choice of pseudocount, now the genes with the very lowest counts will contribute a great deal of noise to the resulting plot, because taking the logarithm of small counts actually inflates their variance.
+# A simple and often used strategy to avoid variance instability is to take the logarithm of the normalized count values plus a pseudocount of 1; however, depending on the choice of pseudocount, now the genes with the very lowest counts will contribute a great deal of noise to the resulting plot, because taking the logarithm of small counts actually inflates their variance.
 log.cts_sim.one <- log2(cts_sim + 1)
 jpeg('log_cts_sim_one.meanSdPlot.jpg')
 meanSdPlot(log.cts_sim.one, ranks = FALSE)
 dev.off()
 
-log.cts_real.one <- log2(cts_real+1)
+log.cts_real.one <- log2(cts_real + 1)
 jpeg('log_cts_real_one.meanSdPlot.jpg')
 meanSdPlot(log.cts_real.one, ranks = FALSE)
 dev.off()
 
 # As a solution, DESeq2 offers two transformations for counts to stabilize the variance across the means. They give similar result to the ordinary log2 transformation of normalized counts. For genes with lower counts, however, the values are shrunken towards a middle value. 
-# Variance stabilizing transformation (vst function) (Anders and Huber 2010): faster & less sensitive to high count outliers. Better large datasets (n > 30)
-# Regularized-logarithm transformation (rlog function) (Love, Huber, and Anders 2014): work well on small datasets (n < 30), potentially outperforming the VST when there is a wide range of sequencing depth across samples
+# Variance stabilizing transformation (vst function) (Anders & Huber 2010): faster, less sensitive to high count outliers & Better for large datasets (n > 30)
+# Regularized-logarithm transformation (rlog function) (Love, Huber and Anders 2014): work well on small datasets (n < 30), potentially outperforming the VST when there is a wide range of sequencing depth across samples
 # You can perform both transformations and compare the meanSdPlot or PCA plots generated
 # Both vst and rlog return a DESeqTransform object which is based on the SummarizedExperiment class. The transformed values are no longer counts, and are stored in the assay slot.
 # Both functions have option called "blind". If TRUE (default), transformation is fully unsupervised. If FALSE, the differences the impact of design's variables (cell line and treatment) will be considered so that it does not affect the expected variance-mean trend of the experiment
@@ -219,6 +215,12 @@ dev.off()
 
 # Remember, we are doing stabilization of the variance across the means to avoid biased impact of high or low genes on sample-sample distance
 # So let us see how this would affect such distance between the 1st 2 samples
+
+if (!requireNamespace("dplyr", quietly = TRUE))
+    BiocManager::install("dplyr")
+if (!requireNamespace("ggplot2", quietly = TRUE))
+    BiocManager::install("ggplot2")
+
 library("dplyr")
 library("ggplot2")
 
@@ -226,20 +228,107 @@ df <- bind_rows(
   as_tibble(log2(cts_real[, 1:2]+1)) %>% mutate(transformation = "log2(x + 1)"),
   as_tibble(assay(vsd)[, 1:2]) %>% mutate(transformation = "vst"),
   as_tibble(assay(rld)[, 1:2]) %>% mutate(transformation = "rlog"))
-
 head(df)
 
 colnames(df)[1:2] <- c("x", "y")  
-
 lvls <- c("log2(x + 1)", "vst", "rlog")
 df$transformation <- factor(df$transformation, levels=lvls)
-
 jpeg('stable_cts_real.jpg')
 ggplot(df, aes(x = x, y = y)) + geom_hex(bins = 80) + coord_fixed() + facet_grid( . ~ transformation)  
 dev.off()
 
 
+# 2. Sample distances (similarity between samples):
+# Use the R function dist to calculate the Euclidean distance between samples after VST transformation
+# Note: dist Function expects the samples to be in rows, thus we have to transpose the input matrix 
+sampleDists <- dist(t(assay(vsd)))
+# Let us have a look on the distance matrix
+sampleDists
 
+# Visualize as a heatmap
+if (!requireNamespace("pheatmap", quietly = TRUE))
+    install.packages("pheatmap")
+if (!requireNamespace("RColorBrewer", quietly = TRUE))
+    install.packages("RColorBrewer")
+
+library("pheatmap")
+library("RColorBrewer")
+
+sampleDistMatrix <- as.matrix(sampleDists)  ## Transform the dist object into matrix
+rownames(sampleDistMatrix) <- paste(vsd$dex, vsd$cell, sep=" - ") ## change row names to contain treatment & cell line instead of sample ID for better visual
+colnames(sampleDistMatrix) <- NULL ## remove column names to avoid redundancy 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) ## specify a blue color palette for painting
+jpeg('vsd_cts_real_cluster.jpg')
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows = sampleDists,
+         clustering_distance_cols = sampleDists,
+         col = colors)
+dev.off()
+
+## unsupervised transformation
+sampleDists2 <- dist(t(assay(vst(ddsTximeta, blind = TRUE))))
+sampleDistMatrix2 <- as.matrix(sampleDists2)  ## Transform the dist object into matrix
+rownames(sampleDistMatrix2) <- paste(vsd$dex, vsd$cell, sep=" - ") ## change row names to contain treatment & cell line instead of sample ID for better visual
+colnames(sampleDistMatrix2) <- NULL ## remove column names to avoid redundancy 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) ## specify a blue color palette for painting
+jpeg('vsd_cts_real_cluster2.jpg')
+pheatmap(sampleDistMatrix2,
+         clustering_distance_rows = sampleDists2,
+         clustering_distance_cols = sampleDists2,
+         col = colors)
+dev.off()
+
+
+# Alternatively, we can use the Poisson Distance (Witten 2011), implemented in the PoiClaClu package. 
+# This measure of dissimilarity takes the inherent variance structure of counts into consideration, thus it takes the original count (not normalized)
+# As the dist function, this function expects the samples to be in rows, thus we have to transpose the input matrix 
+if (!requireNamespace("PoiClaClu", quietly = TRUE))
+    install.packages("PoiClaClu")
+library("PoiClaClu")
+poisd <- PoissonDistance(t(counts(ddsTximeta)))
+# the distance matrix is stored in poisd$dd
+poisd$dd
+# Visualize as a heatmap
+samplePoisDistMatrix <- as.matrix(poisd$dd)  ## Transform the dist object into matrix
+rownames(samplePoisDistMatrix) <- paste(ddsTximeta$dex, ddsTximeta$cell, sep=" - ") ## change row names to contain treatment & cell line instead of sample ID for better visual
+colnames(samplePoisDistMatrix) <- NULL ## remove column names to avoid redundancy 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) ## specify a blue color palette for painting
+jpeg('pois_cts_real_cluster.jpg')
+pheatmap(samplePoisDistMatrix,
+         clustering_distance_rows = poisd$dd,
+         clustering_distance_cols = poisd$dd,
+         col = colors)
+dev.off()
+
+# But how bad it is going to be if we used dist for "raw counts" or "normalized and log2 transformed"
+rawSampleDists <- dist(t(counts(ddsTximeta)))
+rawSampleDistMatrix <- as.matrix(rawSampleDists)  ## Transform the dist object into matrix
+rownames(rawSampleDistMatrix) <- paste(ddsTximeta$dex, ddsTximeta$cell, sep=" - ") ## change row names to contain treatment & cell line instead of sample ID for better visual
+colnames(rawSampleDistMatrix) <- NULL ## remove column names to avoid redundancy 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) ## specify a blue color palette for painting
+jpeg('raw_cts_real_cluster.jpg')
+pheatmap(rawSampleDistMatrix,
+         clustering_distance_rows = rawSampleDists,
+         clustering_distance_cols = rawSampleDists,
+         col = colors)
+dev.off()
+
+logSampleDists <- dist(t(log.cts_real.one))
+logSampleDistMatrix <- as.matrix(logSampleDists)  ## Transform the dist object into matrix
+rownames(logSampleDistMatrix) <- paste(ddsTximeta$dex, ddsTximeta$cell, sep=" - ") ## change row names to contain treatment & cell line instead of sample ID for better visual
+colnames(logSampleDistMatrix) <- NULL ## remove column names to avoid redundancy 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) ## specify a blue color palette for painting
+jpeg('log_cts_real_cluster.jpg')
+pheatmap(logSampleDistMatrix,
+         clustering_distance_rows = logSampleDists,
+         clustering_distance_cols = logSampleDists,
+         col = colors)
+dev.off()
+
+
+### Conclusion:
+### Clustering of raw counts is the most missed up. log2 and vsd unsupervised transformation of normalized counts are almost indifferent and comes next
+### The best is the Poisson Distance of raw counts or the vsd supervised transformation of normalized counts. The vsd supervised approach made use of the design info so I think the Poisson Distance is better as - I think - is able to adjust for hidden batch effect
 
 
 
