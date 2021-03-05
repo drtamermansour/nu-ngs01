@@ -43,9 +43,13 @@ if (!requireNamespace("DESeq2", quietly = TRUE))
     BiocManager::install("DESeq2")
 # 2. Generate tx2gene table: a two-column data.frame linking transcript id (column 1) to gene id (column 2). the column names are not relevant, but this column order must be used. 
 # You should use the suitable annotation database according to the reference you used for previous step. For example, if your transcriptome is based on GRCh37, you should use "TxDb.Hsapiens.UCSC.hg19.knownGene" but if you use annotation of GRCh38, you should use "TxDb.Hsapiens.UCSC.hg38.knownGene"
+# TxDb.Hsapiens.UCSC.hg38.knownGene exposes an annotation databases generated from UCSC as TxDb objects.
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 txdb  ## This DB is based on GENCODE v32. If I would repeat this analysis, I will change my Gencode transcriptome to v32 instead of v36 
+# explore the avlaible key types
+columns(txdb)
+# generate the two-column table
 k <- keys(txdb, keytype = "TXNAME")
 tx2gene <- select(txdb, k, "GENEID", "TXNAME")
 tx2geneV1 <- na.omit(tx2gene)
@@ -76,10 +80,12 @@ if (!requireNamespace("tximeta", quietly = TRUE))
 if (!requireNamespace("readr", quietly = TRUE))
     install.packages("readr")
 # 2. No need to generate tx2gene bc it has annotation metadata for GENCODE transcriptome of Human
-# 3. import and summarize transcript-level estimates by gene. tximeta knows the quantification format of many counting programs including salmon
+# 3. import and summarize transcript-level estimates by gene. tximeta knows the quantification format of many counting programs including salmon which is the default 
 library("tximeta")
 library("readr")
-# 3a) import
+# 3a) import using tximeta functions. Arguments include:
+#  type = c("none", "salmon", "sailfish", "alevin", "kallisto", "rsem", "stringtie"),
+#  useHub: default is TRUE to first attempt to download a TxDb/EnsDb object from AnnotationHub. If FALSE, it will force downloading the GTF from FTP
 se <- tximeta(coldata) 
 # explore the se object
 dim(se)
@@ -112,8 +118,26 @@ colData(gse)
 library("DESeq2")
 ## DESeq2 store the data throughout the analysis in a class named "DESeqDataSet". It is built on top of the SummarizedExperiment class as tximeta output
 ## One of the two main differences is that DESeqDataSet class enforces that the values in this matrix are non-negative integers.
-## A second difference is that the DESeqDataSet has an associated design formula. This formula is specified at the beginning of the analysis, as it will inform many of the DESeq2 functions how to treat the samples in the analysis (one exception is the size factor estimation, i.e., the adjustment for differing library sizes, which does not depend on the design formula). The design formula tells which columns in the sample information table (colData) specify the experimental design and how these factors should be used in the analysis. The simplest design formula for differential expression would be "~ condition", while "~ batch + condition" will control for the effect of the batch column before calculating the DE based on the condition column
+## A second difference is that the DESeqDataSet has an associated design formula specified at the beginning of the analysis. 
+#  The design formula informs many of the DESeq2 functions how to treat the samples in the analysis (one exception is the size factor estimation, i.e., the adjustment for differing library sizes, which does not depend on the design formula). 
+#  The design formula tells which columns in the sample information table (colData) specify the experimental design and how these factors should be used in the analysis. 
+#  The simplest design formula for differential expression would be "~ condition", while "~ batch + condition" will control for the effect of the batch column before calculating the DE based on the condition column
 ddsTximeta <- DESeqDataSet(gse, design = ~ cell + dex)
+
+
+## Alternatively, the function DESeqDataSetFromMatrix can be used if you already have a matrix of read counts prepared from another source.
+## e.g. count matrices from alignment files by the featureCounts function in the Rsubread package. 
+## The function needs a matrix of counts as integers, metadata file, and the design formula.
+raw_counts <- assay(gse)
+raw_counts <- apply(raw_counts, 2, function(x) as.integer(round(x)) )
+ddsCountMat <- DESeqDataSetFromMatrix(countData = raw_counts, colData = coldata, design = ~ cell + dex)
+
+
+## conclusions on the import step:
+#  If you are using a transcript based alignment, tximport/tximeta are better to adjust automatically for transcript length while summerizing expression per gene
+#     tximeta is better for human and mouse as it automate the annotation with the appropriate annotation version 
+#     However for working with self-made annoatation or other species, tximport is the option
+#  For the gene-level alignment approaches, importing from a matrix will be the better option
 
 
 ## Note on factor levels
@@ -143,11 +167,13 @@ nrow(ddsTximeta)
 # Filter based on the total number of reads in all samples 
 keep <- rowSums(counts(ddsTximeta)) > 10
 ddsTximeta <- ddsTximeta[keep,]
-nrow(ddsddsTximeta)
+nrow(ddsTximeta)
 # AND/OR Filter based on having mimimum no of samples with minimal no of reads
 keep <- rowSums(counts(ddsTximeta) >= 10) >= 3
 ddsTximeta <- ddsTximeta[keep,]
-nrow(ddsddsTximeta)
+nrow(ddsTximeta)
+
+# My recommendations: initial minimal pre-filtering is ok. Later automatic independent filtering will select for appropriate additional filteration
 
 # 2. Test for variance stabilizing
 # Exploratory analysis of multidimensional data (e.g. clustering and PCA) works best for data that has the same range of variance at different ranges of the mean values (i.e. homoskedastic data). However, for RNA-seq counts, the expected variance grows with the mean. Therefor, the resulting plot typically depends mostly on the genes with highest counts because they show the largest absolute differences between samples
@@ -238,7 +264,7 @@ ggplot(df, aes(x = x, y = y)) + geom_hex(bins = 80) + coord_fixed() + facet_grid
 dev.off()
 
 
-# 2. Sample distances (similarity between samples):
+# 3. Sample distances (similarity between samples):
 # Use the R function dist to calculate the Euclidean distance between samples after VST transformation
 # Note: dist Function expects the samples to be in rows, thus we have to transpose the input matrix 
 sampleDists <- dist(t(assay(vsd)))
@@ -330,5 +356,342 @@ dev.off()
 ### Clustering of raw counts is the most missed up. log2 and vsd unsupervised transformation of normalized counts are almost indifferent and comes next
 ### The best is the Poisson Distance of raw counts or the vsd supervised transformation of normalized counts. The vsd supervised approach made use of the design info so I think the Poisson Distance is better as - I think - is able to adjust for hidden batch effect
 
+
+# 4. PCA plot
+# Another way to visualize sample-to-sample distances 
+
+# With Supervised VST data
+# Using the plotPCA function that comes with DESeq2.
+jpeg('vsd_cts_real_pca-DESeq.jpg'); plotPCA(vsd, intgroup = c("dex", "cell")); dev.off();
+# Using ggplot2
+pcaData <- plotPCA(vsd, intgroup = c( "dex", "cell"), returnData = TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar")) ## attr function: get or set specific attributes of an object. 
+                                                       ## To see all attributes of you object try: attributes(pcaData)
+jpeg('vsd_cts_real_pca-ggplot.jpg'); 
+ggplot(pcaData, aes(x = PC1, y = PC2, color = dex, shape = cell)) + 
+  geom_point(size =3) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  coord_fixed() +
+  ggtitle("PCA with VST data")
+dev.off();
+
+# Alternatively, with Raw counts
+# Using Generalized PCA implemented in the glmpca package (Townes et al. 2019). 
+# It performs PCA on raw data that is not Normally distributed (e.g. over-dispersed count data)
+if (!requireNamespace("glmpca", quietly = TRUE))
+    install.packages("glmpca")
+library("glmpca")
+
+gpca <- glmpca(counts(ddsTximeta), L=2)
+gpca.dat <- gpca$factors
+gpca.dat$dex <- ddsTximeta$dex
+gpca.dat$cell <- ddsTximeta$cell
+
+jpeg('vsd_cts_real_gPCA-ggplot.jpg')
+ggplot(gpca.dat, aes(x = dim1, y = dim2, color = dex, shape = cell)) +
+  geom_point(size =3) + coord_fixed() + ggtitle("glmpca - Generalized PCA")
+dev.off();
+
+
+# 5. multidimensional scaling (MDS): For more info about difference between MDS and PCA, you can check this page: https://stats.stackexchange.com/questions/14002/whats-the-difference-between-principal-component-analysis-and-multidimensional
+
+# With distances calculated from Supervised VST data
+# Using cmdscale function in base R. It needs a matrix of distances (like heatmap). Bind to more metadata as well for better visualization 
+mdsData <- as.data.frame(cbind(colData(vsd), cmdscale(sampleDistMatrix))) 
+jpeg('vsd_cts_real_MDS-ggplot.jpg')
+ggplot(mdsData, aes(x = V1, y = V2, color = dex, shape = cell)) +
+  geom_point(size = 3) + coord_fixed() + ggtitle("MDS with VST data")
+dev.off();
+
+# With the Poisson Distance. 
+mdsPoisData <- as.data.frame(cbind(colData(ddsTximeta), cmdscale(samplePoisDistMatrix)))
+jpeg('pois_cts_real_MDS-ggplot.jpg')
+ggplot(mdsData, aes(x = V1, y = V2, color = dex, shape = cell)) +
+  geom_point(size = 3) + coord_fixed() + ggtitle("MDS with VST data")
+dev.off();
+
+# 6. Gene clustering
+# Typically for the most highly variable genes (let us select the top 20)
+# We need the normalized expression values to be stabilizied for variance so we will use the VST data.
+# Absolute expression itself is not the point, we care about deviation from the gene’s average across all samples (i.e. mean centered)
+if (!requireNamespace("genefilter", quietly = TRUE))
+    BiocManager::install("genefilter")
+
+library("genefilter")
+topVarGenes <- head(order(rowVars(assay(vsd)), decreasing = TRUE), 20)
+mat  <- assay(vsd)[ topVarGenes, ]
+mat  <- mat - rowMeans(mat)
+anno <- as.data.frame(colData(vsd)[, c("cell","dex")])
+jpeg('varGeneCluster.jpg')
+pheatmap(mat, annotation_col = anno)
+dev.off()
+
+#######################################################
+# Differential expression analysis
+
+# 1. perform DE by DESeq funtion
+# Steps of analysis:
+# 1) estimation of size factors (controlling for differences in the sequencing depth of the samples)
+#    this can be achieved by calling estimateSizeFactors function ## ddsTximeta <- estimateSizeFactors(ddsTximeta)   
+# 2) estimation of dispersion values for each gene. Dispersion describes the size of the distribution of values a variable and can be measured by different statistics, such as range, variance, and standard deviation
+#    this can be achived by calling estimateDispersions function ## ddsTximeta <- estimateDispersions(ddsTximeta) 
+# 3) fitting a generalized linear model "Negative Binomial GLM fitting and Wald statistics" 
+#    this can be achived by calling nbinomWaldTest function ## ddsTximeta <- nbinomWaldTest(ddsTximeta)
+# Input/output: the input is DESeqDataSet & the output is DESeqDataSet that contains all the fitted parameters within it
+ddsTximeta <- DESeq(ddsTximeta)
+
+# 2. Building the results table
+# Function "results" (if used without any arguments) produces the log2 fold changes and p values for the last variable in the design formula
+# It will extract these results for a comparison of the last level over the first level.
+res <- results(ddsTximeta)
+# You can call the results for any variable in the design formula and define the 2 levels you would like to compare 
+res2 <- results(ddsTximeta, contrast=c("cell", "N080611", "N061011"))
+# alternatively, you can use the "name" argument for calling your target comparison. This is especially useful for interactions
+# The value provided to 'name' must be an element of 'resultsNames(DESeq_DE_object)'
+resultsNames(ddsTximeta)
+res3 <- results(ddsTximeta, name="cell_N61311_vs_N052611")
+
+# there are two ways to be more strict about which set of genes are considered significant: 
+# 1. lower the false discovery rate threshold (the threshold on padj) from default (0.1). This value will be used for optimizing the independent filtering
+# 2. raise the log2 fold change threshold from default (0). This value will be used for null-hypothesis testing 
+res_restricted <- results(ddsTximeta, alpha = 0.05, lfcThreshold=1)
+
+# results correct for multiple testing using Benjamini-Hochberg (BH) adjustment (also called FDR adjustment)
+# this can be modified by assigning a different method to the pAdjustMethod argument e.g. bonferroni (see ?p.adjust)
+res_rest_Bonf <- results(ddsTximeta, alpha = 0.05, lfcThreshold=1, pAdjustMethod="bonferroni")
+
+# As result is a DataFrame object, it carries metadata with information on the meaning of the columns:
+mcols(res, use.names = TRUE)
+
+# Also. we can get overall summery by functions like:
+summary(res)
+table(res$padj < 0.05) ## or sum(res$padj < 0.05, na.rm=TRUE)
+
+# Notes about p values
+# p values could be NA if: 
+#    -  all counts for this gene were zero. 
+#    -  the gene was excluded from analysis because it contained an extreme count outlier. 
+#
+# The DESeq2 software (the results function) automatically performs independent filtering that maximizes the number of genes with adjusted p value less than a critical value (by default, alpha is set to 0.1). 
+# In any statistical test, we should filter records that do not have enough observations or if the mean value of all observations is very low because these records will not have enough power. 
+# This will alleviate the burden on multiple testing. This is exteremly important before Bonfferni correction. But if we are using FDR approach for correction of multiple testing, the non-significant p-values does not affect the correction process. Filteration is important only if removed significant hits that will be more likely to be false positives
+# filtering is permissible only if the statistic that we filter on (here the mean of normalized counts across all samples) is independent of the actual test statistic (the p value) under the null hypothesis. 
+# Therefore, filteration based on fold change is a baised strategy. DESeq do not actually filter based on fold change, instead it change the hull hypothesis to consider the sig if its expression has more than 2 fold change but eventually the filteration is based on the mean value of all observations
+
+
+# Typically we select for records with specific threathold of padj. Also, we also can then order to see most down- or up-regulated genes 
+resSig <- subset(res, padj < 0.05)
+head(resSig[ order(resSig$log2FoldChange), ])
+head(resSig[ order(resSig$log2FoldChange, decreasing = TRUE), ])
+# or use the absolute LFC to get the most significant genes 
+head(resSig[ order(abs(resSig$log2FoldChange), decreasing = TRUE), ])
+
+
+# 3. Building the results table after shrinkage of noisy log2 fold changes
+# DESeq2 has a function to shrink noisy log2 fold changes. It is called "lfcShrink" & has 3 types of shrinkage estimators
+# A commonly used one is apeglm which require a coefficient from the model to shrink, either by name or number as appears in resultsNames(dds).
+# Note that this will only change the log2 fold changes not the pValues
+# However, it as argument svalue (default false). If true, p-values and adjusted p-values will be replaced with s-values when using 'apeglm' or 'ashr'. 
+# s-values provide the probability of false signs among the tests with equal or smaller s-value than a given given's s-value. See Stephens (2016) reference on s-values.
+# I need to do more search to figure out if using lfcShrink (with or without s-value) is useful
+if (!requireNamespace("apeglm", quietly = TRUE))
+    BiocManager::install("apeglm")
+
+library("apeglm")
+resultsNames(ddsTximeta)
+res.shr <- lfcShrink(ddsTximeta, coef="dex_Dexamethasone_vs_untreated", type="apeglm")
+
+# you can see the change of LFC after shrinkage
+jpeg('plot.jpg')
+plot(res.shr$log2FoldChange,res$log2FoldChange)
+dev.off()
+
+# Note that this will only change the log2 fold changes not the pValues
+# Therefore any filtration or visualization involving log2 fold change will show some changes 
+resSig.shr <- subset(res.shr, padj < 0.05) ## this will be indifferent in no of genes compared to resSig
+head(resSig.shr[ order(resSig.shr$log2FoldChange), ])                      ## This will be different from resSig
+head(resSig.shr[ order(resSig.shr$log2FoldChange, decreasing = TRUE), ])
+
+
+# 4. Building the results table after Independent Hypothesis Weighting
+# I need to read the paper of IHW to see if this is useful (https://bioconductor.org/packages/3.12/IHW)
+library("IHW")
+res.ihw <- results(dds, filterFun=ihw)
+
+#######################################################
+# Annotating and exporting results
+# In addition to Ensembl gene IDs, we need to add annotations by alternative gene names 
+# Bioconductor provides extensive annotation resources
+# GenomicFeatures: A set of tools to download and manipulat transcriptomic annotations from UCSC Genome Browser or BioMart DB
+# http://bioconductor.org/packages/release/bioc/html/GenomicFeatures.html
+# AnnotationDbi: Implements a user-friendly interface for querying SQLite-based annotation data packages
+# http://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html
+# To understand more about Bioconductor annotation resources:
+# http://bioconductor.org/packages/release/bioc/vignettes/AnnotationDbi/inst/doc/IntroToAnnotationPackages.pdf
+
+# We used TxDb.Hsapiens.UCSC.hg38.knownGene which is a Genome centric GenomicFeatures package that map transcripts to genes
+# Here we will use org.Hs.eg.db which is a Gene centric AnnotationDbi package that map between gene IDs
+# This is the organism annotation package (“org”) for Homo sapiens (“Hs”), organized as an AnnotationDbi database package (“db”), using Entrez Gene IDs (“eg”) as primary key. 
+# To get a list of all available key types, use: columns(org.Hs.eg.db)
+if (!requireNamespace("org.Hs.eg.db", quietly = TRUE))
+    BiocManager::install("org.Hs.eg.db")
+library("org.Hs.eg.db")
+
+# explore the avlaible key types
+columns(org.Hs.eg.db)
+# get the gene IDs (without the version no) from the results object
+ens.str <- substr(rownames(res), 1, 15) 
+# use the mapIds function to add individual columns to the results table.
+# We provide the row names of our results table as a key, and specify that keytype=ENSEMBL.
+# The column argument tells the mapIds function which information we want, and the multiVals argument tells the function what to do if there are multiple possible values for a single input value
+res$symbol <- mapIds(org.Hs.eg.db, keys=ens.str, column="SYMBOL", keytype="ENSEMBL", multiVals="first")
+res$entrez <- mapIds(org.Hs.eg.db, keys=ens.str, column="ENTREZID", keytype="ENSEMBL", multiVals="first")
+
+# Sort the results to prepare for export 
+resOrdered <- res[order(res$pvalue),]
+# convert the results (or subset of it) into dataframe 
+resOrderedDF <- as.data.frame(resOrdered)[1:100, ]
+# Export as a CSV file
+write.csv(resOrderedDF, file = "results.csv")
+
+
+# A more sophisticated way for exporting results the Bioconductor package ReportingTools (Huntley et al. 2013). 
+# ReportingTools will automatically generate dynamic HTML documents, including links to external databases using gene identifiers and boxplots summarizing the normalized counts across groups.
+if (!requireNamespace("ReportingTools", quietly = TRUE))
+    BiocManager::install("ReportingTools")
+library("ReportingTools")
+# prepare the html folder 
+htmlRep <- HTMLReport(shortName="report", title="My report", reportDirectory="./report")
+# add the rownames (Ensembl IDs) as a new column if you need to see the Ensembl IDs in the final output html
+resOrderedDF$ensembl <- rownames(resOrderedDF)
+# read the results table
+publish(resOrderedDF, htmlRep)
+# write into the HTML file & save the path in a variable 
+url <- finish(htmlRep)
+# view in the browser if you are not working on a remote or headless machine
+browseURL(url)
+ 
+
+
+#######################################################
+# Plotting results
+
+# 1. Counts plot of specific gene
+if (!requireNamespace("ggbeeswarm", quietly = TRUE))
+    install.packages("ggbeeswarm")
+library("ggbeeswarm")
+
+topGene <- rownames(res)[which.min(res$padj)]
+geneCounts <- plotCounts(ddsTximeta, gene = topGene, intgroup = c("dex","cell"), returnData = TRUE)
+geneCounts
+
+jpeg('plotCounts-ggplot.jpg')
+ggplot(geneCounts, aes(x = dex, y = count, color = cell)) +
+  scale_y_log10() +  geom_beeswarm(cex = 3)
+dev.off();
+
+jpeg('plotCounts_wLine-ggplot.jpg')
+ggplot(geneCounts, aes(x = dex, y = count, color = cell, group = cell)) +
+  scale_y_log10() + geom_point(size = 3) + geom_line()
+dev.off();
+
+
+# 2. MA-plot (mean-difference plot or a Bland-Altman plot): 
+# On the y-axis, the “M” stands for “minus” – subtraction of log values (this is equivalent to the log of the ratio)
+# On the x-axis, the “A” stands for “average”.
+jpeg('plotMA.jpg')
+plotMA(res, ylim = c(-5, 5))
+# We can label individual points on the MA-plot as well.
+with(res[topGene, ], {
+  points(baseMean, log2FoldChange, col="dodgerblue", cex=2, lwd=2)
+  text(baseMean, log2FoldChange, topGene, pos=2, col="dodgerblue")
+})
+dev.off()
+
+# Alternatively, We can use the results with the shrinked log2 fold changes
+jpeg('plotMA_shr.jpg')
+plotMA(res.shr, ylim = c(-5, 5))
+dev.off()
+
+
+# 3. Histogram of the p values
+# This plot is best formed by excluding genes with very small counts, which otherwise generate spikes in the histogram.
+jpeg('histo_pval.jpg')
+hist(res$pvalue[res$baseMean > 1], breaks = 0:20/20,
+     col = "grey50", border = "white")
+dev.off()
+
+# We can further have a closer look on genes of small p values (say, less than 0.05), to explore the relation to gene expression
+qs <- c(0, quantile(res$baseMean[res$baseMean > 0], 0:20/20))
+bins <- cut(res$baseMean, qs)
+levels(bins) <- paste0("~", round((qs[-1] + qs[-length(qs)])/2, 0))
+fractionSig <- tapply(res$pvalue, bins, function(p) mean(p < .05, na.rm = TRUE))
+jpeg('pvalFreq_expression.jpg')
+barplot(fractionSig, xlab = "mean normalized count", ylab = "fraction of small p values")
+dev.off()
+
+# 4. Gene clustering
+# Like we did in the Exploratory analysis section but we will select the top 20 DE genes (I will use the output of lfcShrink function)
+# Likewise before, We need the normalized expression values to be stabilizied for variance so we will use the VST data.
+# Also, we will show the deviation from the gene’s average across all samples (i.e. mean centered)
+# We need the normalized expression values to be stabilizied for variance. Here we can use the output of lfcShrink function for specific comparison.
+# Absolute expression itself is not the point, we care about deviation from the gene’s average across all samples (i.e. mean centered)
+topDEGenes <- head(rownames(resSig.shr[ order(abs(resSig.shr$log2FoldChange), decreasing = TRUE), ]), 20)
+mat_de_vsd  <- assay(vsd)[ topDEGenes, ]
+mat_de_vsd  <- mat_de_vsd - rowMeans(mat_de_vsd)
+anno <- as.data.frame(colData(vsd)[, c("cell","dex")])
+jpeg('deGeneCluster_vsd.jpg')
+pheatmap(mat_de_vsd, annotation_col = anno)
+dev.off()
+
+#########################################
+## Removing hidden batch effects
+#  Suppose we did not know that there were different cell lines. This would represent some hidden and unwanted variation
+#  We have several packages to identify and correct for such variation
+
+#  sva package: uses the term surrogate variables for this variation (a surrogate variable A variable that can be measured (or easy to measure) that is used in place of one that cannot be measured (or difficult to measure). For example, whereas it may be difficult to assess the wealth of a household,but it is easier to assess the value of a house. 
+if (!requireNamespace("sva", quietly = TRUE))
+    BiocManager::install("sva")
+library("sva")
+# we use a full model matrix with the dex variable, and a reduced, or null, model matrix with only an intercept term. 
+# Then we specify that we want to estimate 2 surrogate variables.
+mod  <- model.matrix(~ dex, colData(ddsTximeta))
+mod0 <- model.matrix(~   1, colData(ddsTximeta))
+svseq <- svaseq(cts_real, mod, mod0, n.sv = 2)  ## cts_real is the pre-filtered normalized expression data "cts_real <- counts(ddsTximeta, normalized=TRUE)"
+# use SVA to remove any effect on the counts from our surrogate variables
+# add these two surrogate variables as columns to the DESeqDataSet and then add them to the design
+ddssva <- ddsTximeta
+ddssva$SV1 <- svseq$sv[,1]
+ddssva$SV2 <- svseq$sv[,2]
+design(ddssva) <- ~ SV1 + SV2 + dex
+
+
+#  RUVSeq package: uses the terms factors of unwanted variation
+if (!requireNamespace("RUVSeq", quietly = TRUE))
+    BiocManager::install("RUVSeq")
+library("RUVSeq")
+# run DESeq and results to obtain the p-values for the analysis without knowing about the batches i.e.  using design = ~ dex
+ddstemp <- ddsTximeta
+design(ddstemp) <- ~ dex
+ddstemp <- DESeq(ddstemp)
+restemp <- results(ddstemp)
+# pull out a set of empirical control genes by looking at the genes that do not have a small p-value.
+set <- newSeqExpressionSet(counts(ddsTximeta))  ## counts(ddsTximeta) return the pre-filtered raw value expression data
+set <- betweenLaneNormalization(set, which="upper") ## This is pre-filtered normalized data (like cts_real) but I am not sure if the upper quantile norm is specifically required 
+not.sig <- rownames(restemp)[which(restemp$pvalue > .1)]
+empirical <- rownames(set)[ rownames(set) %in% not.sig ] ## this should be equal to "not.sig" unless we did any additional filteration in the set object
+# estimate factors of unwanted variation
+set <- RUVg(set, empirical, k=2) ## the 2 estimated factors will be added to the set object as phenoData (run "set" to see the change)
+pData(set)
+# As before, if we wanted to control for these factors, we simply add them to the DESeqDataSet and to the design:
+ddsruv <- ddsTximeta
+ddsruv$W1 <- set$W_1
+ddsruv$W2 <- set$W_2
+design(ddsruv) <- ~ W1 + W2 + dex
+
+#############################################
+## Time course experiments
+## Check the online DESeq2 tutorial
 
 
