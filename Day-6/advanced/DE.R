@@ -1,4 +1,8 @@
 #### Load and prep the metadata object
+#     Typically, we have a table with detailed information for each of our samples.
+#     For your own project, you might create such a comma-separated value (CSV) file using a text editor or spreadsheet software such as Excel.
+#     In this tutorial I copied this file "sample_table.csv" from the airway package (an R package that summarizes RNA-seq & metadata of this study). 
+
 ## Note1: This table should have the samples names, conditions to be compared, and batch info. 
 ## Note2: Columns that connect the quantification files to the samples rows
 # for tximeta package, the metadata table has to have 2 columns: names (to carry the samples name) and files (for file paths)
@@ -22,8 +26,11 @@ coldata$names <- rownames(coldata)
 # let us have another look on the metadata object
 coldata
 ########################################################################################################
-
 #### Import and summarize transcript-level estimates for transcript- and gene-level analysis using tximport or tximeta
+#     Package like "tximeta" can automatically do this for commonly used transcriptomes (GENCODE, Ensembl, RefSeq for human and mouse). 
+#     However, other packages like "tximport" and other transcriptomes will reuire you to generate this file. 
+#     tximport requires a two-column CSV linking transcript id (column 1) to gene id (column 2). the column names are not relevant, but this column order must be used
+
 #### Note: These packages just read and sum the raw and TPM counts. It does not do any adjustments  
 ## tximport package: 
 # http://bioconductor.org/packages/release/bioc/html/tximport.html
@@ -54,6 +61,9 @@ k <- keys(txdb, keytype = "TXNAME")
 tx2gene <- select(txdb, k, "GENEID", "TXNAME")
 tx2geneV1 <- na.omit(tx2gene)
 # Alternatively, make or get your own table. For example, I downloaded Gencode gencode.v36.metadata.EntrezGene metadata file
+download.file("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.metadata.EntrezGene.gz","gencode.v36.metadata.EntrezGene.gz")
+library(R.utils)
+gunzip('gencode.v36.metadata.EntrezGene.gz')
 tx2geneV2 <- read.table("gencode.v36.metadata.EntrezGene", col.names=c("TXNAME","GENEID"), sep = "\t")
 # 3. import and summarize transcript-level estimates by gene. tximport knows the quantification format of many counting programs including salmon
 # important note: if the order in the files vector is not the same order in coldata table OR the names of the files vectors are matching rownames of the coldata, the final columns names will be wrong.  
