@@ -417,7 +417,7 @@ dev.off();
 # With the Poisson Distance. 
 mdsPoisData <- as.data.frame(cbind(colData(ddsTximeta), cmdscale(samplePoisDistMatrix)))
 jpeg('pois_cts_real_MDS-ggplot.jpg')
-ggplot(mdsData, aes(x = V1, y = V2, color = dex, shape = cell)) +
+ggplot(mdsPoisData, aes(x = V1, y = V2, color = dex, shape = cell)) +
   geom_point(size = 3) + coord_fixed() + ggtitle("MDS with VST data")
 dev.off();
 
