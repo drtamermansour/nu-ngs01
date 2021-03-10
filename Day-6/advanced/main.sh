@@ -1,13 +1,6 @@
 ## RNA-seq workflow: gene-level exploratory analysis and differential expression
 ## Source1: http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html (10/16/2019)
 ## Source2: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html (10/27/2020)
-###########################################
-## Software setup
-conda create -n geneDE
-conda activate geneDE
-conda install salmon
-conda install r
-
 ##########################################
 ## Experimental data
 ## Human Airway Smooth Muscle Transcriptome Changes in 4 different cell lines in Response to Asthma Medications(Dexamethasone, Albuterol, or both)
@@ -72,6 +65,8 @@ curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR103/001/SRR1039521/SRR1039521_2.fa
 wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.transcripts.fa.gz
 
 # 2. create Salmon index
+conda create -n geneDE_salmon salmon=1.4.0
+conda activate geneDE_salmon
 salmon index --gencode -t gencode.v36.transcripts.fa.gz -i gencode.v36_salmonIndex ## the --gencode option is only to strip the extra information from the transcript names
 
 # 3. run the alignment
@@ -85,20 +80,7 @@ for sample in {SRR1039508,SRR1039509,SRR1039512,SRR1039513,SRR1039516,SRR1039517
   ## --numGibbsSamples and --numBootstraps options are mutually exclusive. Either one generate a background distribution to estimate the variance in abundance estimates
 done
 
-# 4. Import and summarize transcript-level estimates for transcript- and gene-level analysis
-#    DESeq has several import functions to work easily with different quantification and annotation programs (Check source1; DESeq2 import functions)
-
-# 4A. Expermint annotation
-#     Typically, we have a table with detailed information for each of our samples.
-#     For your own project, you might create such a comma-separated value (CSV) file using a text editor or spreadsheet software such as Excel.
-#     In this tutorial I copied this file "sample_table.csv" from the airway package (an R package that summarizes RNA-seq & metadata of this study). 
-#     You can see how to download and explore this package in explore_airway.R
-
-# 4B. Transcript-to-gene mapping info: Package like "tximeta" can automatically do this for commonly used transcriptomes (GENCODE, Ensembl, RefSeq for human and mouse). 
-#     However, other packages like "tximport" and other transcriptomes will reuire you to generate this file. 
-#     tximport requires a two-column CSV linking transcript id (column 1) to gene id (column 2). the column names are not relevant, but this column order must be used
-wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.metadata.EntrezGene.gz
-gunzip gencode.v36.metadata.EntrezGene.gz
-
-# 4C. run the Import and summarization using tximport or tximeta R packages as described in DE.R
-######################
+# 4. Turn on R and run the code from DE.R
+conda deactivate
+conda create -n geneDE_r -c conda-forge r-base=4.0.3
+conda activate geneDE_r
