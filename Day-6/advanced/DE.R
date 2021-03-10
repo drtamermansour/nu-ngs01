@@ -398,7 +398,7 @@ gpca.dat <- gpca$factors
 gpca.dat$dex <- ddsTximeta$dex
 gpca.dat$cell <- ddsTximeta$cell
 
-jpeg('vsd_cts_real_gPCA-ggplot.jpg')
+jpeg('glmPCA-ggplot.jpg')
 ggplot(gpca.dat, aes(x = dim1, y = dim2, color = dex, shape = cell)) +
   geom_point(size =3) + coord_fixed() + ggtitle("glmpca - Generalized PCA")
 dev.off();
