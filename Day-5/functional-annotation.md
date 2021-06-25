@@ -2,7 +2,7 @@
 
 ### Install
 ``` 
-source activate ngs1
+conda activate ngs1
 conda install -c bioconda transdecoder  # TransDecoder for predicting coding regions in transcripts
 conda install -c bioconda trinotate     # Trinotate automatic functional annotation of transcriptomes
 conda install -c bioconda hmmer         # for searching sequence databases for sequence homologs
@@ -35,18 +35,20 @@ transcripts.fasta.transdecoder.gff3 : positions within the target transcripts of
 transcripts.fasta.transdecoder.bed  : bed-formatted file describing ORF positions, best for viewing using GenomeView or IGV.
 ```
 
-### Download databases for homology search
-```
-mkdir -p ~/workdir/databases && cd ~/workdir/databases
-wget https://abdelrahmanma.com/NGS01/SWISSPROT-Hmm.tar.xz
-tar -xvf SWISSPROT-Hmm.tar.xz
-```
-
 ### Sequence homology searches
+## a) NCBI BLAST+ aganist SwissProt database (The UniProt Knowledgebase which include the Manually annotated proteins)
 ```
 mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
 
-## NCBI BLAST+ aganist SwissProt database (The UniProt Knowledgebase which include the Manually annotated proteins)
+## Download SwissProt database (we are using small version for demonstration)
+mkdir -p ~/workdir/databases && cd ~/workdir/databases
+wget https://github.com/trinityrnaseq/KrumlovTrinityWorkshopJan2018/raw/master/data/mini_sprot.pep.gz
+gunzip mini_sprot.pep.gz
+
+## create the blast DB
+makeblastdb -in mini_sprot.pep -dbtype prot
+
+## Run the blast aanalysis
 blastx -db ~/workdir/databases/mini_sprot.pep \
          -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta  \
          -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
@@ -57,7 +59,33 @@ blastp -db ~/workdir/databases/mini_sprot.pep \
          -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
           > swissprot.blastp.outfmt6
 
-## HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
+## Assessment
+analyze_blastPlus_topHit_coverage.pl swissprot.blastx.outfmt6 \
+                                     ~/workdir/trinity/trinity_out_dir/Trinity.fasta \
+                                     ~/workdir/databases/mini_sprot.pep | column -t
+
+analyze_blastPlus_topHit_coverage.pl swissprot.blastp.outfmt6 \
+                                     ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep \
+                                     ~/workdir/databases/mini_sprot.pep | column -t
+```
+
+Here is the output for swissprot.blastx.outfmt6
+```
+#hit_pct_cov_bin  count_in_bin  >bin_below
+100               4             4
+90                3             7
+80                1             8
+70                2             10
+60                2             12
+50                2             14
+40                3             17
+30                1             18
+20                4             22
+10                3             25
+```
+
+## b) HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
+```
 hmmpress ~/workdir/databases/Pfam-A.hmm
 hmmscan --cpu 1 --domtblout TrinotatePFAM.out \
           ~/workdir/databases/Pfam-A.hmm \
