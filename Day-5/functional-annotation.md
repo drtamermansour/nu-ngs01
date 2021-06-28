@@ -110,6 +110,8 @@ Here is the output for swissprot.blastx.outfmt6
 10                14            95
 ```
 
+The above table lists bins of percent length coverage of the best matching protein sequence along with counts of proteins found within that bin. For example, 6 proteins are matched by 90-100% of their length. There are 5 matched by 80-90% of their length. The third column provides a running total, indicating that 11 transcripts match more than 80% of their length, and 14 transcripts match more than 70% of their length, etc.
+
 ## b) HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
 
 Instead of searching aganist all known sequences, HMMER compares sequences against all known domain families using a prebuilt dataset of statistical models e.g. Pfam profiles
