@@ -1,14 +1,45 @@
 # Functional Annotation
 
-### Install
+### Resources:
+
+*   [Backgroud](https://github.com/Trinotate/Trinotate.github.io/wiki)
+*   [Installation and annotation](https://github.com/Trinotate/Trinotate.github.io/wiki/Software-installation-and-data-required)
+*   [Loading results into a Trinotate SQLite Database](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report)
+
+### Install 
 ``` 
 conda activate ngs1
 conda install -c bioconda transdecoder  # TransDecoder for predicting coding regions in transcripts
 conda install -c bioconda trinotate     # Trinotate automatic functional annotation of transcriptomes
 conda install -c bioconda hmmer         # for searching sequence databases for sequence homologs
 ```
+### Download annotation databases 
+```
+## The analysis requires download of several annotation databases 
+## Trinotate comes with a script to download recent version of all required data resources including the latest version of swissprot, pfam, and other companion resources, create and populate a Trinotate boilerplate sqlite database (Trinotate.sqlite) 
+## WARINING: DO NOT RUN THIS command. It will take too much time and space ## Build_Trinotate_Boilerplate_SQLite_db.pl  Trinotate  
+
+## For this tutorial, we will skip this step and install smaller versions of these resources 
+## Download SwissProt database (we are using small version for demonstration)
+mkdir -p ~/workdir/databases && cd ~/workdir/databases
+wget https://data.cyverse.org/dav-anon/iplant/home/drtamermansour/Trinotate_sample_DB/uniprot_sprot.sample.pep.gz
+gunzip uniprot_sprot.sample.pep.gz
+
+## Download Pfam database (we are using small version for demonstration)
+wget https://data.cyverse.org/dav-anon/iplant/home/drtamermansour/Trinotate_sample_DB/Pfam-A.sample.hmm.gz
+gunzip Pfam-A.sample.hmm.gz
+
+## Download and prepare Trinotate boilerplate sqlite database 
+wget https://data.cyverse.org/dav-anon/iplant/home/drtamermansour/Trinotate_sample_DB/Trinotate.sample.UniprotIndex.gz
+gunzip Trinotate.sample.UniprotIndex.gz
+prefix="Trinotate"
+EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite "$prefix".sqlite --create
+EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite "$prefix".sqlite --uniprot_index $prefix.sample.UniprotIndex
+```
 
 ### Coding Region Identification using [Transdecoder](https://github.com/TransDecoder/TransDecoder/wiki)
+
+Check how does TransDecoder identify likely coding sequences on the its [wiki page](https://github.com/TransDecoder/TransDecoder/wiki) 
 ```
 cd ~/workdir/trinity/trinity_out_dir
 # Extract the long open reading frames
@@ -40,21 +71,16 @@ transcripts.fasta.transdecoder.bed  : bed-formatted file describing ORF position
 ```
 mkdir -p ~/workdir/trinotate && cd ~/workdir/trinotate
 
-## Download SwissProt database (we are using small version for demonstration)
-mkdir -p ~/workdir/databases && cd ~/workdir/databases
-wget https://github.com/trinityrnaseq/KrumlovTrinityWorkshopJan2018/raw/master/data/mini_sprot.pep.gz
-gunzip mini_sprot.pep.gz
-
-## create the blast DB
-makeblastdb -in mini_sprot.pep -dbtype prot
+## Create the blast DB
+makeblastdb -in ~/workdir/databases/uniprot_sprot.sample.pep -dbtype prot
 
 ## Run the blast aanalysis
-blastx -db ~/workdir/databases/mini_sprot.pep \
+blastx -db ~/workdir/databases/uniprot_sprot.sample.pep \
          -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta  \
          -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
           > swissprot.blastx.outfmt6
           
-blastp -db ~/workdir/databases/mini_sprot.pep \
+blastp -db ~/workdir/databases/uniprot_sprot.sample.pep \
          -query ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep \
          -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 1 \
           > swissprot.blastp.outfmt6
@@ -62,63 +88,66 @@ blastp -db ~/workdir/databases/mini_sprot.pep \
 ## Assessment
 analyze_blastPlus_topHit_coverage.pl swissprot.blastx.outfmt6 \
                                      ~/workdir/trinity/trinity_out_dir/Trinity.fasta \
-                                     ~/workdir/databases/mini_sprot.pep | column -t
+                                     ~/workdir/databases/uniprot_sprot.sample.pep | column -t
 
 analyze_blastPlus_topHit_coverage.pl swissprot.blastp.outfmt6 \
                                      ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep \
-                                     ~/workdir/databases/mini_sprot.pep | column -t
+                                     ~/workdir/databases/uniprot_sprot.sample.pep | column -t
 ```
 
 Here is the output for swissprot.blastx.outfmt6
 ```
 #hit_pct_cov_bin  count_in_bin  >bin_below
-100               4             4
-90                3             7
-80                1             8
-70                2             10
-60                2             12
-50                2             14
-40                3             17
-30                1             18
-20                4             22
-10                3             25
+100               6             6
+90                5             11
+80                3             14
+70                4             18
+60                10            28
+50                8             36
+40                13            49
+30                14            63
+20                18            81
+10                14            95
 ```
 
 ## b) HMMER/PFAM Protein Domain Identification (http://hmmer.org/)
+
+Instead of searching aganist all known sequences, HMMER compares sequences against all known domain families using a prebuilt dataset of statistical models e.g. Pfam profiles
 ```
-hmmpress ~/workdir/databases/Pfam-A.hmm
+## Run the HMMER aanalysis
+hmmpress ~/workdir/databases/Pfam-A.sample.hmm
 hmmscan --cpu 1 --domtblout TrinotatePFAM.out \
-          ~/workdir/databases/Pfam-A.hmm \
+          ~/workdir/databases/Pfam-A.sample.hmm \
           ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep      
 ```
 
-### Trinotate boilerplate sqlite database 
-```
-# Build_Trinotate_Boilerplate_SQLite_db.pl  Trinotate  ## This step will download several data resources including the latest version of swissprot, pfam, and other companion resources, create and populate a Trinotate boilerplate sqlite database (Trinotate.sqlite)
-# Today we will download the file ready for use
-wget https://abdelrahmanma.com/NGS01/Trinotate.sqlite.tar.xz
-tar -xvf Trinotate.sqlite.tar.xz
-```
 
 ### Preparing and Generating a Trinotate Annotation Report
 ```
-Trinotate Trinotate.sqlite init \
-     --gene_trans_map ~/workdir/trinity/trinity_out_dir/Trinity.fasta.gene_trans_map \
+# Generate a map for genes and their corresponding transcripts 
+get_Trinity_gene_to_trans_map=$(find /home/ngs/miniconda3/envs/ngs1 -name get_Trinity_gene_to_trans_map.pl)
+$get_Trinity_gene_to_trans_map ~/workdir/trinity/trinity_out_dir/Trinity.fasta >  Trinity.fasta.gene_trans_map
+
+# Load these info into the Trinotate sqlite database
+Trinotate ~/workdir/databases/Trinotate.sqlite init \
+     --gene_trans_map Trinity.fasta.gene_trans_map \
      --transcript_fasta ~/workdir/trinity/trinity_out_dir/Trinity.fasta \
      --transdecoder_pep ~/workdir/trinity/trinity_out_dir/Trinity.fasta.transdecoder.pep
 
-Trinotate Trinotate.sqlite \
+# Loading BLAST homologies
+Trinotate ~/workdir/databases/Trinotate.sqlite \
        LOAD_swissprot_blastx swissprot.blastx.outfmt6
        
-Trinotate Trinotate.sqlite \
+Trinotate ~/workdir/databases/Trinotate.sqlite \
        LOAD_swissprot_blastp swissprot.blastp.outfmt6
- 
-Trinotate Trinotate.sqlite LOAD_pfam TrinotatePFAM.out
+
+# Load Pfam domain entries
+Trinotate ~/workdir/databases/Trinotate.sqlite LOAD_pfam TrinotatePFAM.out
 ```
 
 ### Generate the Trinotate Annotation Report
 ```
-Trinotate Trinotate.sqlite report > Trinotate.xls
+Trinotate ~/workdir/databases/Trinotate.sqlite report > Trinotate.xls
 less Trinotate.xls
 ```
 
