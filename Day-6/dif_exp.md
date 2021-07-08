@@ -107,7 +107,9 @@ gffread chr22_with_ERCC92.gtf -g chr22_with_ERCC92.fa -w chr22_with_ERCC92_trans
 ```bash
 # For differential expression, we will use DESeq R package and for visualization, we will use gplots package. 
 conda install r
-conda install -y bioconductor-deseq r-gplots
+conda install r-gplots
+conda install -c bioconda bioconductor-deseq
+
 mkdir -p ~/scripts && cd ~/scripts
 wget https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/deseq1.r
 wget https://raw.githubusercontent.com/drtamermansour/nu-ngs01/master/Day-6/draw-heatmap.r
