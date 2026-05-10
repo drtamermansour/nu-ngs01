@@ -19,7 +19,7 @@ mkdir -p ~/workdir/seqkit/ && cd ~/workdir/seqkit/
 ## Download sample data
 
 ```bash
-wget ftp://mirbase.org/pub/mirbase/21/hairpin.fa.gz
+wget https://www.mirbase.org/download/hairpin.fa
 ```
 
 <hr>
@@ -28,11 +28,11 @@ wget ftp://mirbase.org/pub/mirbase/21/hairpin.fa.gz
 
 ### Read from file
 
-`seqkit seq hairpin.fa.gz`
+`seqkit seq hairpin.fa`
 
 ### Read from stdin
 
-`zcat hairpin.fa.gz | seqkit seq`
+`cat hairpin.fa | seqkit seq`
 
 ## 2- Sequence Types
 
@@ -43,7 +43,7 @@ echo -e ">seq\nAACGATCGAATATCGCGTAGCTACGTACGC" | seqkit stats
 echo -e ">seq\nACGUN ACGUN" | seqkit stats
 echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit stats
 echo -e "@read\nACTGCN\n+\n@IICCG" | seqkit stats
-seqkit stat hairpin.fa.gz
+seqkit stat hairpin.fa
 ```
 
 ### Force to read specific file type by `-t` or `--seq-type`
@@ -56,20 +56,20 @@ echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit seq -t dna
 
 ### Full name
 
-`seqkit seq hairpin.fa.gz -n`
+`seqkit seq hairpin.fa -n`
 
 ### Only IDs
 
-`seqkit seq hairpin.fa.gz -n -i`
+`seqkit seq hairpin.fa -n -i`
 
 ## 4- Only print seq (global flag -w defines the output line width, 0 for no wrap)
 
-`seqkit seq hairpin.fa.gz -s -w 0`
+`seqkit seq hairpin.fa -s -w 0`
 
 
 ## 5- Reverse complement sequence
 
-`seqkit seq hairpin.fa.gz -r -p`
+`seqkit seq hairpin.fa -r -p`
 
 ## 6- Remove gaps and to lower/upper case
 
@@ -82,9 +82,9 @@ echo -e ">seq\nabcdefghijklmnpqrstvwyz" | seqkit seq -t dna
 ## 8- Filter by sequence length
 
 ```bash
-zcat hairpin.fa.gz | seqkit seq | seqkit stats
-zcat hairpin.fa.gz | seqkit seq -m 100 | seqkit stats
-zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
+cat hairpin.fa | seqkit seq | seqkit stats
+cat hairpin.fa | seqkit seq -m 100 | seqkit stats
+cat hairpin.fa | seqkit seq -m 100 -M 1000 | seqkit stats
 ```
 
 ---
@@ -93,19 +93,19 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 ### 1- Extract human hairpins (i.e. sequences with name starting with hsa)
 
-`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa`
+`cat hairpin.fa | seqkit grep -r -p ^hsa`
 
 ### 2- Extract human and mice hairpins.
 
-`zcat hairpin.fa.gz | seqkit grep -r -p ^hsa -p ^mmu`
+`cat hairpin.fa | seqkit grep -r -p ^hsa -p ^mmu`
 
 ### 3- Extract sequences containing AGGCG
 
-`zcat hairpin.fa.gz | seqkit grep -s -i -p aggcg`
+`cat hairpin.fa | seqkit grep -s -i -p aggcg`
 
 ### 4- Extract sequences starting with AGGCG
 
-`zcat hairpin.fa.gz | seqkit grep -s -r -i -p ^aggcg`
+`cat hairpin.fa | seqkit grep -s -r -i -p ^aggcg`
 
 ---
 
@@ -134,10 +134,10 @@ zcat hairpin.fa.gz | seqkit seq -m 100 -M 1000 | seqkit stats
 
 ### General Usage
 
-`seqkit shuffle hairpin.fa.gz`
+`seqkit shuffle hairpin.fa`
 
 ### Shuffle with a two-pass mode (For very large files)
 
-`seqkit shuffle -2 hairpin.fa.gz`
+`seqkit shuffle -2 hairpin.fa`
 
 ---
